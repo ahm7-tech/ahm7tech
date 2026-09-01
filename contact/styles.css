@@ -1,0 +1,443 @@
+/*
+  AHM₇ TECH / Midnight Circuit — revision
+  Visual target: the supplied clean direct-contact example.
+  Composition: small top rail, left editorial headline, right contact stack, quiet footer.
+*/
+
+:root {
+  --ink: #050608;
+  --ink-deep: #030507;
+  --surface: rgba(8, 12, 17, 0.54);
+  --surface-hover: rgba(13, 23, 31, 0.8);
+  --line: rgba(175, 204, 220, 0.15);
+  --line-hover: rgba(22, 217, 255, 0.46);
+  --text: #f0f4f5;
+  --text-soft: #9ba8af;
+  --text-dim: #5c6971;
+  --cyan: #16d9ff;
+  --blue: #358eff;
+  --violet: #733bff;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--ink);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 76% 51%, rgba(14, 95, 120, 0.1), transparent 28rem),
+    linear-gradient(110deg, rgba(5, 6, 8, 0.995) 0%, rgba(5, 8, 11, 0.96) 50%, rgba(3, 10, 15, 0.91) 100%);
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.page-shell {
+  position: relative;
+  width: min(100%, 1440px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 22px clamp(20px, 6vw, 92px) 21px;
+  overflow: hidden;
+}
+
+.page-shell::after {
+  position: absolute;
+  top: 9%;
+  right: -250px;
+  width: 530px;
+  height: 530px;
+  border: 1px solid rgba(34, 133, 161, 0.14);
+  border-radius: 50%;
+  content: '';
+  pointer-events: none;
+}
+
+.site-header,
+.site-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-header {
+  min-height: 49px;
+  border-bottom: 1px solid rgba(175, 204, 220, 0.1);
+}
+
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  transition: opacity 180ms var(--ease-out);
+}
+
+.brand-lockup:hover,
+.brand-lockup:focus-visible {
+  opacity: 0.78;
+}
+
+.brand-image-wrap {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(22, 217, 255, 0.35);
+  border-radius: 50%;
+  background: #071014;
+  box-shadow: 0 0 17px rgba(22, 217, 255, 0.12);
+}
+
+.brand-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand-name {
+  color: #edf3f5;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.brand-name sup,
+.page-title sup,
+.site-footer sup,
+.direct-pill sup {
+  position: relative;
+  top: -0.19em;
+  color: var(--cyan);
+  font-size: 0.6em;
+}
+
+.header-status,
+.utility-label,
+.direct-pill,
+.site-footer {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 11px rgba(22, 217, 255, 0.85);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+}
+
+.contact-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.95fr);
+  align-items: center;
+  gap: clamp(54px, 8vw, 126px);
+  min-height: calc(100vh - 122px);
+  padding: clamp(54px, 8vh, 92px) 0 clamp(61px, 8vh, 93px);
+}
+
+.hero-copy {
+  max-width: 520px;
+}
+
+.direct-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 23px;
+  padding: 4px 10px;
+  border: 1px solid rgba(22, 217, 255, 0.1);
+  border-radius: 999px;
+  color: #93a4ab;
+  background: rgba(9, 25, 31, 0.72);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.page-title {
+  margin: 22px 0 21px;
+  color: var(--text);
+  font-size: clamp(58px, 7vw, 96px);
+  font-weight: 600;
+  letter-spacing: -0.087em;
+  line-height: 0.88;
+}
+
+.page-title span {
+  display: inline-block;
+  color: transparent;
+  background: linear-gradient(100deg, var(--cyan) 4%, var(--blue) 58%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero-description {
+  max-width: 380px;
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.contact-stack {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.contact-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 86px;
+  padding: 17px 25px 17px 28px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  transition: transform 180ms var(--ease-out), border-color 180ms var(--ease-out), background 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+
+.contact-card::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  content: '';
+  background: transparent;
+  transition: background 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+
+.contact-card:hover,
+.contact-card:focus-visible {
+  transform: translateX(-5px);
+  border-color: var(--line-hover);
+  background: var(--surface-hover);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24), 0 0 28px rgba(22, 217, 255, 0.05);
+}
+
+.contact-card:hover::before,
+.contact-card:focus-visible::before {
+  background: var(--cyan);
+  box-shadow: 0 0 13px rgba(22, 217, 255, 0.9);
+}
+
+.contact-card:active {
+  transform: scale(0.985);
+}
+
+.contact-card-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.utility-label {
+  color: var(--text-dim);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+}
+
+.contact-card strong {
+  color: #e8f0f2;
+  font-size: clamp(15px, 1.5vw, 18px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.contact-arrow {
+  color: var(--cyan);
+  font-size: 25px;
+  font-weight: 400;
+  line-height: 1;
+  transition: transform 180ms var(--ease-out);
+}
+
+.contact-card:hover .contact-arrow,
+.contact-card:focus-visible .contact-arrow {
+  transform: translate(2px, -2px);
+}
+
+.site-footer {
+  gap: 24px;
+  min-height: 39px;
+  border-top: 1px solid rgba(175, 204, 220, 0.1);
+  color: var(--text-dim);
+  font-size: 9px;
+}
+
+.site-footer > span:first-child {
+  color: #87969d;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.footer-rule {
+  display: inline-block;
+  width: 38px;
+  height: 1px;
+  margin: 0 11px 3px;
+  background: rgba(22, 217, 255, 0.5);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
+}
+
+.reveal-2.is-visible { transition-delay: 55ms; }
+.reveal-3.is-visible { transition-delay: 105ms; }
+.reveal-4.is-visible { transition-delay: 155ms; }
+.reveal-5.is-visible { transition-delay: 205ms; }
+.reveal-6.is-visible { transition-delay: 255ms; }
+.reveal-7.is-visible { transition-delay: 305ms; }
+
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 4px;
+}
+
+@media (max-width: 820px) {
+  .page-shell {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .contact-hero {
+    grid-template-columns: 1fr;
+    gap: 54px;
+    min-height: auto;
+    padding-top: 84px;
+    padding-bottom: 75px;
+  }
+
+  .hero-copy {
+    max-width: 600px;
+  }
+
+  .contact-stack {
+    max-width: 620px;
+    margin-left: auto;
+  }
+
+}
+
+@media (max-width: 520px) {
+  .page-shell {
+    padding: 18px 20px 19px;
+  }
+
+  .header-status {
+    font-size: 8px;
+    letter-spacing: 0.11em;
+  }
+
+  .contact-hero {
+    gap: 45px;
+    padding-top: 83px;
+    padding-bottom: 67px;
+  }
+
+  .page-title {
+    margin-top: 21px;
+    font-size: clamp(57px, 17.5vw, 78px);
+  }
+
+  .hero-description {
+    max-width: 330px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .contact-card {
+    min-height: 82px;
+    padding: 16px 17px 16px 19px;
+  }
+
+  .contact-card strong {
+    font-size: 14px;
+  }
+
+  .contact-arrow {
+    font-size: 23px;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
