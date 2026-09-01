@@ -338,12 +338,13 @@ main {
   transition: opacity 520ms var(--ease-out), transform 520ms var(--ease-out);
 }
 
-.reveal-2.is-visible { transition-delay: 55ms; }
-.reveal-3.is-visible { transition-delay: 105ms; }
-.reveal-4.is-visible { transition-delay: 155ms; }
-.reveal-5.is-visible { transition-delay: 205ms; }
-.reveal-6.is-visible { transition-delay: 255ms; }
-.reveal-7.is-visible { transition-delay: 305ms; }
+.reveal-1.is-visible { transition-delay: 20ms; }
+.reveal-2.is-visible { transition-delay: 75ms; }
+.reveal-3.is-visible { transition-delay: 130ms; }
+.reveal-4.is-visible { transition-delay: 185ms; }
+.reveal-5.is-visible { transition-delay: 240ms; }
+.reveal-6.is-visible { transition-delay: 295ms; }
+.reveal-7.is-visible { transition-delay: 350ms; }
 
 :focus-visible {
   outline: 2px solid var(--cyan);
@@ -372,7 +373,6 @@ main {
     max-width: 620px;
     margin-left: auto;
   }
-
 }
 
 @media (max-width: 520px) {
