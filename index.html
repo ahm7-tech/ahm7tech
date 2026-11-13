@@ -109,6 +109,17 @@ section.block h2 { font-size: 24px; font-weight: 800; }
   height: 120px; display: flex; align-items: center; justify-content: center;
   font-size: 44px; font-weight: 800; color: rgba(255,255,255,.95); letter-spacing: 1px;
 }
+/* v17.109: product photos — fixed height, cropped the same way for every product. */
+.card-img { width: 100%; height: 120px; object-fit: cover; object-position: center; display: block; background: var(--bg-soft); }
+.list-img { width: 56px; height: 56px; object-fit: cover; object-position: center; border-radius: 12px; flex-shrink: 0; display: block; background: var(--bg-soft); }
+.detail-img { width: 100%; height: 220px; object-fit: cover; object-position: center; border-radius: var(--radius); display: block; margin-bottom: 18px; background: var(--bg-soft); }
+/* v17.109: home-page contact buttons. */
+.contact-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+.contact-row .btn { flex: 1; min-width: 200px; text-align: center; }
+.btn-whatsapp { background: #25D366; color: #fff; }
+.btn-whatsapp:hover { background: #1EBE5B; }
+.btn-telegram { background: #229ED9; color: #fff; }
+.btn-telegram:hover { background: #1B8CC2; }
 .card-body { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .card-cat {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
@@ -479,6 +490,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
   </div>
 
   <div class="container">
+    <div id="contactRow" class="contact-row hidden"></div>
     <div id="productsLoading" class="loading">Loading products…</div>
     <div id="productsError" class="notice error hidden"></div>
 
@@ -530,8 +542,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
   <footer>
     <div class="container">
       <p>AHM7 STORE — Premium digital products, low prices.</p>
-      <p>Questions? Our support team is on Telegram.</p>
-      <a class="btn" href="https://t.me/ahm7storebot" target="_blank" rel="noopener">💬 Chat with us on Telegram</a>
+      <p>Questions? Reach us on WhatsApp.</p>
     </div>
   </footer>
 </main>
@@ -666,7 +677,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
     <div class="panel" style="text-align:center;">
       <h2 id="failedTitle">Order update</h2>
       <p class="sub" id="failedText" style="margin-top:10px;"></p>
-      <a class="btn" href="https://t.me/ahm7storebot" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px;">💬 Contact support</a><br>
+      <a class="btn btn-whatsapp hidden" id="failedSupportLink" href="#" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px;">💬 Contact support on WhatsApp</a><br>
       <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/')">Browse products</button>
       <p class="order-id-line" id="failedOrderId"></p>
     </div>
@@ -805,7 +816,6 @@ footer .btn { display: inline-block; margin-top: 12px; }
       </div>
       <button type="button" class="btn btn-block" id="signinBtn" onclick="doSignin()">Sign in</button>
       <p class="auth-switch">New here? <a href="#/signup">Create an account</a></p>
-      <p class="auth-switch">Need help? <a href="https://t.me/ahm7storebot" target="_blank" rel="noopener">Message us on Telegram</a></p>
     </div>
   </div>
 </main>
@@ -886,8 +896,6 @@ footer .btn { display: inline-block; margin-top: 12px; }
         <button type="button" class="menu-row" onclick="goRoute('#/help')"><span class="menu-icon">❓</span> Help &amp; Support <span class="menu-arrow">›</span></button>
         <button type="button" class="menu-row hidden" id="installAppRow" onclick="installApp()"><span class="menu-icon">📲</span> Install App <span class="menu-arrow">›</span></button>
         <div id="installIosHint" class="notice info hidden" style="margin-top:8px;">On iPhone: tap Share, then Add to Home Screen.</div>
-        <button type="button" class="menu-row" onclick="goRoute('#/admin')"><span class="menu-icon">🛡️</span> Admin <span class="menu-arrow">›</span></button>
-        <a class="menu-row" href="https://t.me/ahm7storebot" target="_blank" rel="noopener"><span class="menu-icon">💬</span> Chat with us on Telegram <span class="menu-arrow">›</span></a>
         <button type="button" class="menu-row danger hidden" id="logoutRow" onclick="doLogout()"><span class="menu-icon">🚪</span> Log out <span class="menu-arrow">›</span></button>
       </div>
     </div>
@@ -918,14 +926,14 @@ footer .btn { display: inline-block; margin-top: 12px; }
       </div>
       <div class="faq-card">
         <h3>⚠️ How do I report a problem?</h3>
-        <p>Message us on Telegram <b>@ahm7storebot</b> with your order ID and a screenshot of the problem, and we will help you.</p>
+        <p>Message us on WhatsApp with your order ID and a screenshot of the problem, and we will help you.</p>
       </div>
       <div class="faq-card">
         <h3>💳 What payments are accepted?</h3>
         <p>Easypaisa, JazzCash, NayaPay, USDT, Binance and Bybit. You can pay per order, or top up your wallet once and buy in one tap.</p>
       </div>
       <div style="text-align:center;margin-top:18px;">
-        <a class="btn" href="https://t.me/ahm7storebot" target="_blank" rel="noopener">💬 Chat with us on Telegram</a>
+        <a class="btn btn-whatsapp hidden" id="helpWhatsappBtn" href="#" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
       </div>
     </div>
   </div>
@@ -967,6 +975,20 @@ footer .btn { display: inline-block; margin-top: 12px; }
         <button type="button" class="btn btn-ghost btn-small" id="adminUsersPrev" onclick="adminUsersPageChange(-1)">← Prev</button>
         <span class="page-info" id="adminUsersPageInfo"></span>
         <button type="button" class="btn btn-ghost btn-small" id="adminUsersNext" onclick="adminUsersPageChange(1)">Next →</button>
+      </div>
+      <div class="admin-section">
+        <h3>⚙️ Store Settings</h3>
+        <p class="sub">Buttons shown on the home page. Leave a field empty to hide its button.</p>
+        <div class="field">
+          <label for="adminSettingsWhatsapp">WhatsApp number (digits with country code)</label>
+          <input type="text" id="adminSettingsWhatsapp" placeholder="e.g. 923001234567" inputmode="numeric" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="adminSettingsTelegram">Telegram store link</label>
+          <input type="url" id="adminSettingsTelegram" placeholder="e.g. https://t.me/ahm7storebot" inputmode="url" autocomplete="off">
+        </div>
+        <button type="button" class="btn btn-block" id="adminSettingsBtn" onclick="saveAdminSettings()">Save Settings</button>
+        <div id="adminSettingsMsg" class="notice hidden" style="margin-top:10px;"></div>
       </div>
       <div style="margin-top:16px;">
         <button type="button" class="btn btn-ghost btn-block" onclick="doAdminLogout()">Log out of Admin</button>
@@ -1065,7 +1087,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
 <script>
 /* ============================================================
-   AHM7 STORE v17.108 — full web store (wallet-first) + website admin
+   AHM7 STORE v17.109 — full web store (wallet-first) + website admin
    Products live from the bot API (same MongoDB as Telegram).
    Auth: JWT in localStorage ("ahm7_token").
    Admin: separate JWT in localStorage ("ahm7_admin_token"), routes #/admin*.
@@ -1317,6 +1339,73 @@ async function loadConfig() {
 function googleEnabled() {
   return Boolean(siteConfig && siteConfig.googleClientId);
 }
+
+/* ============================================================
+   Store settings (v17.109) — WhatsApp + Telegram store links
+   shown on the home page. Public endpoint, no auth.
+   ============================================================ */
+let storeSettings = null; // {whatsappNumber, telegramUrl}
+async function loadStoreSettings() {
+  const r = await apiFetch("/web/store-settings");
+  if (r.ok && r.data && r.data.ok) {
+    storeSettings = { whatsappNumber: r.data.whatsappNumber || null, telegramUrl: r.data.telegramUrl || null };
+  } else {
+    storeSettings = { whatsappNumber: null, telegramUrl: null };
+  }
+  renderContactRow();
+  renderHelpContact();
+  renderFailedSupport();
+  return storeSettings;
+}
+function whatsappUrl() {
+  const n = storeSettings && storeSettings.whatsappNumber ? String(storeSettings.whatsappNumber).replace(/\D/g, "") : "";
+  return n ? "https://wa.me/" + n : null;
+}
+function telegramStoreUrl() {
+  const u = storeSettings && storeSettings.telegramUrl ? String(storeSettings.telegramUrl).trim() : "";
+  return u || null;
+}
+function renderContactRow() {
+  const row = document.getElementById("contactRow");
+  if (!row) return;
+  const wa = whatsappUrl();
+  const tg = telegramStoreUrl();
+  if (!wa && !tg) { row.classList.add("hidden"); row.innerHTML = ""; return; }
+  row.classList.remove("hidden");
+  row.innerHTML =
+    (wa ? `<a class="btn btn-whatsapp" href="${esc(wa)}" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>` : "") +
+    (tg ? `<a class="btn btn-telegram" href="${esc(tg)}" target="_blank" rel="noopener">✈️ Visit Telegram Store</a>` : "");
+}
+function renderHelpContact() {
+  const btn = document.getElementById("helpWhatsappBtn");
+  if (!btn) return;
+  const wa = whatsappUrl();
+  if (wa) { btn.href = wa; btn.classList.remove("hidden"); }
+  else { btn.classList.add("hidden"); }
+}
+function renderFailedSupport() {
+  const a = document.getElementById("failedSupportLink");
+  if (!a) return;
+  const wa = whatsappUrl();
+  if (wa) { a.href = wa; a.classList.remove("hidden"); }
+  else { a.classList.add("hidden"); }
+}
+
+/* ============================================================
+   Product pictures (v17.109) — fixed-height, auto-aligned boxes
+   (object-fit: cover). No image area at all when there is no photo.
+   ============================================================ */
+function productImageUrl(p) {
+  const path = p && p.imageUrl ? String(p.imageUrl) : "";
+  if (!path) return null;
+  if (/^https?:\/\//i.test(path)) return path;
+  return API_BASE.replace(/\/v1$/, "") + path;
+}
+function productImageHtml(p, cls) {
+  const url = productImageUrl(p);
+  if (!url) return "";
+  return `<img src="${esc(url)}" class="${cls}" alt="${esc(p.name || "Product")}" loading="lazy">`;
+}
 function renderCurrencyToggle() {
   const list = (siteConfig && Array.isArray(siteConfig.currencies) && siteConfig.currencies.length)
     ? siteConfig.currencies.map(c => String(c).toLowerCase())
@@ -1453,7 +1542,7 @@ function productCardHtml(p) {
   const out = !p.inStock;
   return `
   <div class="card">
-    <div class="card-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>
+    ${productImageHtml(p, "card-img") || `<div class="card-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>`}
     <div class="card-body">
       <span class="card-cat">${esc(p.category || "Product")}</span>
       <div class="card-name">${esc(p.name)}</div>
@@ -1499,7 +1588,7 @@ function renderAllProducts() {
     const hasDisc = p.hasDiscount && origPrice(p, currency) > payPrice(p, currency);
     return `
     <div class="list-row">
-      <div class="list-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>
+      ${productImageHtml(p, "list-img") || `<div class="list-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>`}
       <div class="list-info">
         <div class="list-cat">${esc(p.category || "Product")}${hasDisc && kindLabel ? " • " + kindLabel : ""}</div>
         <div class="list-name">${esc(p.name)}</div>
@@ -1548,7 +1637,7 @@ function renderDetail() {
   const hasTerms = Boolean((p.termsAndConditions || "").trim());
   const max = maxQtyFor(p);
   document.getElementById("detailContent").innerHTML = `
-    <div class="detail-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>
+    ${productImageHtml(p, "detail-img") || `<div class="detail-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>`}
     <span class="card-cat">${esc(p.category || "Product")}</span>
     <h2 style="margin-top:8px;">${esc(p.name)}</h2>
     <div class="detail-price-row">${priceHtml(p)}</div>
@@ -2912,6 +3001,56 @@ function doAdminLogout() {
   goRoute("#/admin");
 }
 
+/* ============================================================
+   Admin — Store Settings (v17.109): WhatsApp number + Telegram
+   store link shown on the home page. Public GET, admin POST.
+   ============================================================ */
+async function loadAdminSettings() {
+  const r = await apiFetch("/web/store-settings");
+  if (r.ok && r.data && r.data.ok) {
+    const wa = document.getElementById("adminSettingsWhatsapp");
+    const tg = document.getElementById("adminSettingsTelegram");
+    if (wa) wa.value = r.data.whatsappNumber || "";
+    if (tg) tg.value = r.data.telegramUrl || "";
+  }
+}
+async function saveAdminSettings() {
+  const msgEl = document.getElementById("adminSettingsMsg");
+  msgEl.classList.add("hidden");
+  const wa = (document.getElementById("adminSettingsWhatsapp").value || "").replace(/\D/g, "");
+  const tg = (document.getElementById("adminSettingsTelegram").value || "").trim();
+  const btn = document.getElementById("adminSettingsBtn");
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  const r = await adminFetch("/web/admin/settings", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ whatsappNumber: wa, telegramUrl: tg })
+  });
+  btn.disabled = false;
+  btn.textContent = "Save Settings";
+  if (r.status === 401) { adminUnauthorized(); return; }
+  if (!r.ok || !r.data || r.data.ok !== true) {
+    msgEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection."
+      : friendlyError(r.data);
+    msgEl.className = "notice error";
+    msgEl.classList.remove("hidden");
+    return;
+  }
+  const saved = r.data.settings || {};
+  storeSettings = {
+    whatsappNumber: saved.whatsappNumber || wa || null,
+    telegramUrl: saved.telegramUrl || tg || null
+  };
+  renderContactRow();
+  renderHelpContact();
+  renderFailedSupport();
+  msgEl.textContent = "Settings saved.";
+  msgEl.className = "notice success";
+  msgEl.classList.remove("hidden");
+}
+
 async function showAdminUsers(page) {
   stopTimers();
   if (!isAdminLoggedIn()) { showAdminLogin(); return; }
@@ -2927,6 +3066,7 @@ async function showAdminUsers(page) {
   listEl.innerHTML = "";
   loadEl.classList.remove("hidden");
   showView("view-admin-users");
+  loadAdminSettings();
   const q = "?page=" + adminUsersPage + (adminUsersSearch ? "&search=" + encodeURIComponent(adminUsersSearch) : "");
   const r = await adminFetch("/web/admin/users" + q);
   loadEl.classList.add("hidden");
@@ -3168,6 +3308,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   registerServiceWorker();
   updateInstallRow();
   await loadConfig();
+  loadStoreSettings();
   if (token) await loadMe();
   window.addEventListener("hashchange", route);
   // Top-up amount input updates the estimate live.
