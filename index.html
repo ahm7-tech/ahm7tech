@@ -113,6 +113,9 @@ section.block h2 { font-size: 24px; font-weight: 800; }
 .card-img { width: 100%; height: 120px; object-fit: cover; object-position: center; display: block; background: var(--bg-soft); }
 .list-img { width: 56px; height: 56px; object-fit: cover; object-position: center; border-radius: 12px; flex-shrink: 0; display: block; background: var(--bg-soft); }
 .detail-img { width: 100%; height: 220px; object-fit: cover; object-position: center; border-radius: var(--radius); display: block; margin-bottom: 18px; background: var(--bg-soft); }
+/* v17.112: payment method photo on the pay screens — same fixed-height,
+   auto-cropped alignment as the product photo. */
+.method-img { width: 100%; height: 220px; object-fit: cover; object-position: center; border-radius: var(--radius); display: block; margin-bottom: 14px; background: var(--bg-soft); }
 /* v17.109: home-page contact buttons. */
 .contact-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
 .contact-row .btn { flex: 1; min-width: 200px; text-align: center; }
@@ -636,6 +639,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
       </div>
       <div class="countdown hidden" id="countdown"></div>
 
+      <img id="payMethodImg" class="method-img hidden" alt="">
       <div class="pay-details" id="payDetails"></div>
       <div id="payCopyFields"></div>
 
@@ -751,6 +755,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
       </div>
       <div class="countdown hidden" id="topupCountdown"></div>
 
+      <img id="topupMethodImg" class="method-img hidden" alt="">
       <div class="pay-details" id="topupPayDetails"></div>
       <div id="topupPayCopyFields"></div>
 
@@ -1418,6 +1423,22 @@ function productImageHtml(p, cls) {
   if (!url) return "";
   return `<img src="${esc(url)}" class="${cls}" alt="${esc(p.name || "Product")}" loading="lazy">`;
 }
+/* v17.112: payment method photo — same URL rule as product photos (a relative
+   URL like "/v1/web/methods/<id>/image" is resolved against the API base). */
+function methodImageUrl(path) {
+  const p = path ? String(path) : "";
+  if (!p) return null;
+  if (/^https?:\/\//i.test(p)) return p;
+  return API_BASE.replace(/\/v1$/, "") + p;
+}
+/* v17.112: a product is unlimited when the API says so (p.unlimited), else
+   when it is in stock and its stock number is 0 or less — the bot's
+   unlimitedCredential. */
+function isUnlimitedProduct(p) {
+  if (!p) return false;
+  if (typeof p.unlimited === "boolean") return p.unlimited;
+  return Boolean(p.inStock) && Number(p.stock || 0) <= 0;
+}
 function renderCurrencyToggle() {
   const list = (siteConfig && Array.isArray(siteConfig.currencies) && siteConfig.currencies.length)
     ? siteConfig.currencies.map(c => String(c).toLowerCase())
@@ -1561,7 +1582,7 @@ function productCardHtml(p) {
       <div class="card-desc">${esc(p.description || "")}</div>
       <div class="card-foot">
         ${priceHtml(p)}
-        <span class="stock-badge ${out ? "out" : "in"}">${out ? "Out of Stock" : "In Stock"}</span>
+        <span class="stock-badge ${out ? "out" : "in"}">${out ? "Out of Stock" : (isUnlimitedProduct(p) ? "♾️" : "In Stock")}</span>
       </div>
       <button type="button" class="btn btn-block" ${out ? "disabled" : ""}
         onclick="goRoute('#/detail/${esc(p.keyword || p.id)}')">${out ? "Out of stock" : "View Product"}</button>
@@ -1608,7 +1629,7 @@ function renderAllProducts() {
       </div>
       <div class="list-price">
         <div>${priceHtml(p)}</div>
-        ${out ? `<div class="out-tag">Out of stock</div>` : `<div><span class="stock-badge in">In Stock</span></div>`}
+        ${out ? `<div class="out-tag">Out of stock</div>` : `<div><span class="stock-badge in">${isUnlimitedProduct(p) ? "♾️" : "In Stock"}</span></div>`}
       </div>
       <button type="button" class="btn" ${out ? "disabled" : ""} onclick="goRoute('#/detail/${esc(p.keyword || p.id)}')">${out ? "Out of stock" : "View"}</button>
     </div>`;
@@ -1644,8 +1665,10 @@ function renderDetail() {
   if (!p) return;
   const out = !p.inStock;
   const stock = Number(p.stock || 0);
+  const unlimited = isUnlimitedProduct(p);
+  // v17.112: unlimited shows just ♾️, like the bot — no "In Stock (unlimited)" text.
   const stockText = out ? "Out of stock"
-    : (stock > 0 ? `In Stock (${stock} available)` : "In Stock (unlimited)");
+    : (unlimited ? "♾️" : (stock > 0 ? `In Stock (${stock} available)` : "♾️"));
   const hasTerms = Boolean((p.termsAndConditions || "").trim());
   const max = maxQtyFor(p);
   document.getElementById("detailContent").innerHTML = `
@@ -1653,7 +1676,7 @@ function renderDetail() {
     <span class="card-cat">${esc(p.category || "Product")}</span>
     <h2 style="margin-top:8px;">${esc(p.name)}</h2>
     <div class="detail-price-row">${priceHtml(p)}</div>
-    <div class="detail-stock ${out ? "out" : "in"}">${out ? "🔴 " : "🟢 "}${esc(stockText)}</div>
+    <div class="detail-stock ${out ? "out" : "in"}">${out ? "🔴 " : (unlimited ? "" : "🟢 ")}${esc(stockText)}</div>
     <p class="detail-desc">${esc(p.description || "")}</p>
     <div class="detail-note">⚡ <b>Automatic Delivery</b> — check your Orders page to get your item after purchase. Order updates are sent by email.</div>
     <div class="field">
@@ -1991,6 +2014,11 @@ function showPayScreen() {
   const pd = o.payDetails || {};
   document.getElementById("payDetails").textContent = pd.details || "";
   document.getElementById("payDetails").classList.toggle("hidden", !pd.details);
+  // v17.112: payment method photo above the payment details (nothing when none).
+  const payMethodImgUrl = methodImageUrl(pd.imageUrl);
+  const payMethodImgEl = document.getElementById("payMethodImg");
+  if (payMethodImgUrl) { payMethodImgEl.src = payMethodImgUrl; payMethodImgEl.classList.remove("hidden"); }
+  else { payMethodImgEl.classList.add("hidden"); payMethodImgEl.removeAttribute("src"); }
   document.getElementById("payCopyFields").innerHTML = (pd.copyFields || []).map(f => `
     <div class="copy-row">
       <span><span class="copy-label">${esc(f.label)}</span><br><span class="copy-value">${esc(f.value)}</span></span>
@@ -2408,6 +2436,11 @@ function showTopupPayScreen() {
   const pd = t.paymentDetails || {};
   document.getElementById("topupPayDetails").textContent = pd.details || "";
   document.getElementById("topupPayDetails").classList.toggle("hidden", !pd.details);
+  // v17.112: payment method photo above the payment details (nothing when none).
+  const topupMethodImgUrl = methodImageUrl(pd.imageUrl);
+  const topupMethodImgEl = document.getElementById("topupMethodImg");
+  if (topupMethodImgUrl) { topupMethodImgEl.src = topupMethodImgUrl; topupMethodImgEl.classList.remove("hidden"); }
+  else { topupMethodImgEl.classList.add("hidden"); topupMethodImgEl.removeAttribute("src"); }
   document.getElementById("topupPayCopyFields").innerHTML = (pd.copyFields || []).map(f => `
     <div class="copy-row">
       <span><span class="copy-label">${esc(f.label)}</span><br><span class="copy-value">${esc(f.value)}</span></span>
