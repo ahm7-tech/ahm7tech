@@ -4,33 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AHM7 STORE — Premium Digital Products, Low Prices</title>
-<meta name="description" content="Premium digital products at low prices. Pay with Easypaisa, JazzCash, NayaPay or USDT. Instant delivery, no Telegram needed.">
+<meta name="description" content="Premium digital products at low prices. Add funds, pay with Easypaisa, JazzCash, NayaPay or USDT. Instant delivery, no Telegram needed.">
 <style>
 /* ===================== Base ===================== */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --green: #16a34a;
-  --green-dark: #15803d;
-  --green-soft: #f0fdf4;
-  --ink: #0f172a;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --bg: #ffffff;
-  --bg-soft: #f8fafc;
-  --red: #dc2626;
-  --amber: #b45309;
-  --radius: 14px;
+  --indigo: #4F46E5;
+  --indigo-dark: #4338CA;
+  --indigo-soft: #EEF2FF;
+  --indigo-line: #C7D2FE;
+  --emerald: #059669;
+  --emerald-soft: #ECFDF5;
+  --red: #DC2626;
+  --red-soft: #FEF2F2;
+  --amber: #B45309;
+  --amber-soft: #FFFBEB;
+  --ink: #0F172A;
+  --muted: #64748B;
+  --line: #E5E7EB;
+  --bg: #FFFFFF;
+  --bg-soft: #F8FAFC;
+  --radius: 16px;
 }
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--ink);
   background: var(--bg);
   line-height: 1.55;
+  padding-bottom: 76px; /* room for the fixed bottom nav */
 }
-a { color: var(--green); text-decoration: none; }
+a { color: var(--indigo); text-decoration: none; }
 button { font-family: inherit; cursor: pointer; }
 input, select { font-family: inherit; }
-.container { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 .hidden { display: none !important; }
 
 /* ===================== Header ===================== */
@@ -38,46 +44,56 @@ header {
   position: sticky; top: 0; z-index: 50;
   background: rgba(255,255,255,.97);
   border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(6px);
 }
 .header-inner {
-  max-width: 1080px; margin: 0 auto; padding: 12px 16px;
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  max-width: 1100px; margin: 0 auto; padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
 }
-.logo { font-size: 22px; font-weight: 800; letter-spacing: .5px; color: var(--ink); }
-.logo span { color: var(--green); }
+.logo { font-size: 22px; font-weight: 800; letter-spacing: .5px; color: var(--ink); cursor: pointer; }
+.logo span { color: var(--indigo); }
 .header-spacer { flex: 1; }
+.wallet-chip {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 800; color: var(--indigo-dark);
+  background: var(--indigo-soft); border: 1px solid var(--indigo-line);
+  border-radius: 999px; padding: 7px 14px; cursor: pointer;
+}
 .support-link {
   font-size: 14px; font-weight: 600; color: var(--ink);
   border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px;
-  background: #fff;
+  background: #fff; white-space: nowrap;
 }
-.support-link:hover { border-color: var(--green); color: var(--green); }
+.support-link:hover { border-color: var(--indigo); color: var(--indigo); }
 
 /* Currency toggle */
 .currency-toggle { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
 .currency-toggle button {
-  border: 0; background: #fff; padding: 7px 14px; font-size: 14px; font-weight: 700; color: var(--muted);
+  border: 0; background: #fff; padding: 7px 12px; font-size: 13px; font-weight: 700; color: var(--muted);
 }
-.currency-toggle button.active { background: var(--green); color: #fff; }
+.currency-toggle button.active { background: var(--indigo); color: #fff; }
 
 /* ===================== Hero ===================== */
-.hero { text-align: center; padding: 48px 16px 20px; background: linear-gradient(180deg, var(--green-soft), #fff); }
+.hero {
+  text-align: center; padding: 46px 16px 22px;
+  background: radial-gradient(600px 260px at 50% -40px, var(--indigo-soft), #fff 70%);
+}
 .hero h1 { font-size: clamp(28px, 5vw, 44px); line-height: 1.15; font-weight: 800; }
-.hero h1 span { color: var(--green); }
+.hero h1 span { color: var(--indigo); }
 .hero p { color: var(--muted); font-size: 17px; max-width: 620px; margin: 12px auto 0; }
 .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
 .badge {
   background: #fff; border: 1px solid var(--line); border-radius: 999px;
   padding: 8px 16px; font-size: 14px; font-weight: 600;
-  box-shadow: 0 1px 3px rgba(15,23,42,.05);
+  box-shadow: 0 1px 4px rgba(15,23,42,.06);
 }
 
 /* ===================== Sections ===================== */
-section.block { padding: 34px 0 8px; }
+section.block { padding: 32px 0 8px; }
 section.block h2 { font-size: 24px; font-weight: 800; }
 .section-sub { color: var(--muted); margin: 4px 0 18px; }
 
-/* ===================== Product cards (Popular) ===================== */
+/* ===================== Product cards ===================== */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
 .card {
   border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
@@ -85,7 +101,7 @@ section.block h2 { font-size: 24px; font-weight: 800; }
   box-shadow: 0 1px 4px rgba(15,23,42,.05);
   transition: transform .12s ease, box-shadow .12s ease;
 }
-.card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(15,23,42,.09); }
+.card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(15,23,42,.10); }
 .card-tile {
   height: 120px; display: flex; align-items: center; justify-content: center;
   font-size: 44px; font-weight: 800; color: rgba(255,255,255,.95); letter-spacing: 1px;
@@ -93,39 +109,42 @@ section.block h2 { font-size: 24px; font-weight: 800; }
 .card-body { padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .card-cat {
   font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
-  color: var(--green); background: var(--green-soft);
+  color: var(--indigo); background: var(--indigo-soft);
   align-self: flex-start; padding: 3px 8px; border-radius: 999px;
 }
 .card-name { font-size: 16px; font-weight: 700; line-height: 1.3; }
 .card-desc { font-size: 13px; color: var(--muted); flex: 1;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.card-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
 .price { font-size: 18px; font-weight: 800; }
 .price .old { font-size: 13px; font-weight: 500; color: var(--muted); text-decoration: line-through; margin-right: 6px; }
 .discount-tag {
   font-size: 11px; font-weight: 700; color: var(--red);
-  background: #fef2f2; border: 1px solid #fecaca; border-radius: 999px; padding: 2px 7px;
+  background: var(--red-soft); border: 1px solid #FECACA; border-radius: 999px; padding: 2px 7px;
 }
+.stock-badge { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 9px; }
+.stock-badge.in { color: var(--emerald); background: var(--emerald-soft); }
+.stock-badge.out { color: var(--red); background: var(--red-soft); }
 
 /* Buttons */
 .btn {
-  border: 0; border-radius: 10px; padding: 10px 18px; font-size: 15px; font-weight: 700;
-  background: var(--green); color: #fff;
+  border: 0; border-radius: 12px; padding: 11px 18px; font-size: 15px; font-weight: 700;
+  background: var(--indigo); color: #fff;
 }
-.btn:hover { background: var(--green-dark); }
-.btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+.btn:hover { background: var(--indigo-dark); }
+.btn:disabled { background: #CBD5E1; cursor: not-allowed; }
 .btn-ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-.btn-ghost:hover { border-color: var(--green); color: var(--green); }
+.btn-ghost:hover { border-color: var(--indigo); color: var(--indigo); }
 .btn-block { width: 100%; }
 .btn-small { padding: 7px 12px; font-size: 13px; }
 
 /* ===================== All products list ===================== */
 .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
 .search-box {
-  flex: 1; min-width: 200px; padding: 10px 14px; font-size: 15px;
-  border: 1px solid var(--line); border-radius: 10px; outline: none;
+  flex: 1; min-width: 200px; padding: 11px 14px; font-size: 15px;
+  border: 1px solid var(--line); border-radius: 12px; outline: none;
 }
-.search-box:focus { border-color: var(--green); }
+.search-box:focus { border-color: var(--indigo); }
 .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .chip {
   border: 1px solid var(--line); background: #fff; border-radius: 999px;
@@ -145,7 +164,7 @@ section.block h2 { font-size: 24px; font-weight: 800; }
 .list-info { flex: 1; min-width: 0; }
 .list-name { font-weight: 700; font-size: 15px; }
 .list-desc { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.list-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--green); }
+.list-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--indigo); }
 .list-price { text-align: right; flex-shrink: 0; }
 .out-tag { font-size: 12px; font-weight: 700; color: var(--red); }
 
@@ -160,51 +179,59 @@ section.block h2 { font-size: 24px; font-weight: 800; }
 footer { margin-top: 48px; border-top: 1px solid var(--line); padding: 28px 0 40px; text-align: center; color: var(--muted); font-size: 14px; }
 footer .btn { display: inline-block; margin-top: 12px; }
 
-/* ===================== Checkout / pay / delivered views ===================== */
+/* ===================== Views / panels ===================== */
 .view { padding: 28px 0 40px; }
-.panel { max-width: 620px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: 0 2px 10px rgba(15,23,42,.05); }
+.panel { max-width: 620px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: 0 2px 12px rgba(15,23,42,.06); }
 .panel h2 { font-size: 22px; margin-bottom: 4px; }
 .panel .sub { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
 .back-link { display: inline-block; margin-bottom: 14px; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; background: none; border: 0; padding: 0; }
-.back-link:hover { color: var(--green); }
+.back-link:hover { color: var(--indigo); }
 .field { margin-bottom: 14px; }
 .field label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 5px; }
-.field input[type="email"], .field input[type="text"] {
-  width: 100%; padding: 11px 13px; font-size: 15px; border: 1px solid var(--line); border-radius: 10px; outline: none;
+.field input[type="email"], .field input[type="text"], .field input[type="password"],
+.field input[type="tel"], .field input[type="number"] {
+  width: 100%; padding: 11px 13px; font-size: 15px; border: 1px solid var(--line); border-radius: 12px; outline: none;
 }
-.field input:focus { border-color: var(--green); }
+.field input:focus { border-color: var(--indigo); }
 .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .field .error { font-size: 12px; color: var(--red); margin-top: 4px; }
 
-/* Quantity stepper */
+/* Quantity stepper + presets */
 .qty-row { display: flex; align-items: center; gap: 10px; }
 .qty-btn {
-  width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 10px;
+  width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 12px;
   background: #fff; font-size: 18px; font-weight: 700;
 }
-.qty-btn:disabled { color: #cbd5e1; cursor: not-allowed; }
+.qty-btn:disabled { color: #CBD5E1; cursor: not-allowed; }
 .qty-num { min-width: 40px; text-align: center; font-size: 17px; font-weight: 700; }
-.tier-hint { font-size: 13px; color: var(--green); font-weight: 600; margin-top: 6px; }
+.tier-hint { font-size: 13px; color: var(--emerald); font-weight: 600; margin-top: 6px; }
+.qty-presets { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.qty-preset {
+  border: 1px solid var(--line); background: #fff; border-radius: 999px;
+  padding: 7px 16px; font-size: 14px; font-weight: 700; color: var(--ink);
+}
+.qty-preset.active { background: var(--indigo); color: #fff; border-color: var(--indigo); }
 
 /* Terms box */
 .terms-box {
-  border: 1px solid var(--line); border-radius: 10px; background: var(--bg-soft);
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg-soft);
   padding: 12px 14px; font-size: 13px; color: var(--muted);
   max-height: 150px; overflow-y: auto; white-space: pre-wrap; margin-bottom: 8px;
 }
 .terms-check { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; font-weight: 600; }
-.terms-check input { margin-top: 3px; }
+.terms-check input { margin-top: 3px; accent-color: var(--indigo); }
 
 /* Payment method picker */
 .method-list { display: flex; flex-direction: column; gap: 8px; }
 .method-option {
   display: flex; align-items: center; gap: 10px;
-  border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer;
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer;
 }
-.method-option.selected { border-color: var(--green); background: var(--green-soft); }
-.method-option input { accent-color: var(--green); }
+.method-option.selected { border-color: var(--indigo); background: var(--indigo-soft); }
+.method-option input { accent-color: var(--indigo); }
 .method-name { font-weight: 700; font-size: 15px; }
 .method-type { font-size: 12px; color: var(--muted); }
+.wallet-option .method-name { color: var(--indigo-dark); }
 
 /* Pay screen */
 .total-big { text-align: center; padding: 18px 0 6px; }
@@ -213,12 +240,12 @@ footer .btn { display: inline-block; margin-top: 12px; }
 .total-big .method-line { font-size: 14px; color: var(--muted); margin-top: 2px; }
 .countdown { text-align: center; font-size: 15px; font-weight: 700; color: var(--amber); margin: 6px 0 14px; }
 .pay-details {
-  border: 1px dashed var(--line); border-radius: 10px; background: var(--bg-soft);
+  border: 1px dashed var(--line); border-radius: 12px; background: var(--bg-soft);
   padding: 14px; font-size: 14px; white-space: pre-wrap; margin-bottom: 12px;
 }
 .copy-row {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; background: #fff;
+  border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; background: #fff;
 }
 .copy-row .copy-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
 .copy-row .copy-value { font-size: 15px; font-weight: 700; word-break: break-all; }
@@ -228,23 +255,143 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
 /* Credentials */
 .cred-box {
-  border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px;
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-bottom: 10px;
   display: flex; align-items: flex-start; gap: 10px; background: var(--bg-soft);
 }
 .cred-text { flex: 1; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
 .order-id-line { font-size: 13px; color: var(--muted); text-align: center; margin-top: 14px; }
 
 /* Notices */
-.notice { border-radius: 10px; padding: 13px 15px; font-size: 14px; margin-bottom: 14px; }
-.notice.error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
-.notice.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
-.notice.success { background: var(--green-soft); border: 1px solid #bbf7d0; color: #166534; }
+.notice { border-radius: 12px; padding: 13px 15px; font-size: 14px; margin-bottom: 14px; }
+.notice.error { background: var(--red-soft); border: 1px solid #FECACA; color: #991B1B; }
+.notice.info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+.notice.success { background: var(--emerald-soft); border: 1px solid #A7F3D0; color: #065F46; }
 .loading { text-align: center; color: var(--muted); padding: 40px 0; font-size: 15px; }
 .empty { text-align: center; color: var(--muted); padding: 30px 0; }
+
+/* Status badges */
+.status-badge { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.status-approved { color: var(--emerald); background: var(--emerald-soft); }
+.status-pending { color: var(--amber); background: var(--amber-soft); }
+.status-failed { color: var(--red); background: var(--red-soft); }
+
+/* Order / transaction rows */
+.order-card, .txn-row {
+  border: 1px solid var(--line); border-radius: var(--radius); background: #fff;
+  padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(15,23,42,.04);
+}
+.order-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.order-name { font-weight: 700; font-size: 16px; }
+.order-meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.order-total { font-size: 17px; font-weight: 800; text-align: right; white-space: nowrap; }
+.txn-row { display: flex; align-items: center; gap: 12px; }
+.txn-icon {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800;
+}
+.txn-icon.topup { background: var(--emerald-soft); color: var(--emerald); }
+.txn-icon.spend { background: var(--indigo-soft); color: var(--indigo); }
+.txn-info { flex: 1; min-width: 0; }
+.txn-label { font-weight: 700; font-size: 14px; }
+.txn-sub { font-size: 12px; color: var(--muted); }
+.txn-amount { font-weight: 800; font-size: 15px; white-space: nowrap; }
+.txn-amount.pos { color: var(--emerald); }
+.txn-amount.neg { color: var(--ink); }
+
+/* Wallet card */
+.wallet-card {
+  background: linear-gradient(135deg, var(--indigo), #7C3AED);
+  color: #fff; border-radius: var(--radius); padding: 22px; margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(79,70,229,.25);
+}
+.wallet-card .wc-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; opacity: .85; }
+.wallet-card .wc-amount { font-size: 36px; font-weight: 800; margin: 4px 0; }
+.wallet-card .wc-email { font-size: 14px; opacity: .9; }
+
+/* Menu rows */
+.menu-list { display: flex; flex-direction: column; }
+.menu-row {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  background: none; border: 0; border-bottom: 1px solid var(--line);
+  padding: 15px 4px; font-size: 15px; font-weight: 600; color: var(--ink); text-align: left;
+}
+.menu-row:last-child { border-bottom: 0; }
+.menu-row .menu-icon { font-size: 20px; width: 28px; text-align: center; }
+.menu-row .menu-arrow { margin-left: auto; color: var(--muted); }
+.menu-row.danger { color: var(--red); }
+
+/* FAQ cards */
+.faq-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; background: #fff; }
+.faq-card h3 { font-size: 16px; margin-bottom: 6px; }
+.faq-card p { font-size: 14px; color: var(--muted); }
+
+/* Detail page */
+.detail-tile {
+  height: 170px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
+  font-size: 64px; font-weight: 800; color: rgba(255,255,255,.95); margin-bottom: 18px;
+}
+.detail-price-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 8px 0; }
+.detail-price { font-size: 30px; font-weight: 800; }
+.detail-old { font-size: 17px; color: var(--muted); text-decoration: line-through; }
+.detail-stock { font-size: 14px; font-weight: 700; margin: 4px 0 12px; }
+.detail-stock.in { color: var(--emerald); }
+.detail-stock.out { color: var(--red); }
+.detail-desc { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+.detail-note {
+  background: var(--indigo-soft); border: 1px solid var(--indigo-line); color: var(--indigo-dark);
+  border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-bottom: 16px;
+}
+.total-row { display: flex; justify-content: space-between; align-items: center; margin: 14px 0; }
+.total-row .t-label { font-weight: 700; }
+.total-row .t-value { font-size: 22px; font-weight: 800; }
+
+/* Auth */
+.auth-switch { text-align: center; font-size: 14px; color: var(--muted); margin-top: 14px; }
+.google-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  padding: 11px; font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 14px;
+}
+.google-btn:hover { border-color: var(--indigo); }
+.google-btn .g-mark {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0;
+  background: conic-gradient(#4285F4 0 25%, #EA4335 25% 50%, #FBBC05 50% 75%, #34A853 75% 100%);
+  display: flex; align-items: center; justify-content: center;
+}
+.google-btn .g-mark span { background: #fff; border-radius: 50%; width: 12px; height: 12px; display: block; }
+
+/* Bottom navigation */
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  background: rgba(255,255,255,.98); border-top: 1px solid var(--line);
+  box-shadow: 0 -2px 12px rgba(15,23,42,.06);
+}
+.bottom-nav-inner {
+  max-width: 560px; margin: 0 auto; display: flex; align-items: stretch; justify-content: space-around;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+}
+.nav-item {
+  flex: 1; background: none; border: 0; display: flex; flex-direction: column; align-items: center;
+  gap: 2px; padding: 6px 0 4px; font-size: 11px; font-weight: 700; color: var(--muted);
+}
+.nav-item .nav-icon { font-size: 21px; line-height: 1; }
+.nav-item.active { color: var(--indigo); }
+.nav-add {
+  flex: 0 0 auto; width: 56px; height: 56px; margin-top: -26px;
+  background: var(--indigo); color: #fff; border: 4px solid #fff; border-radius: 50%;
+  font-size: 26px; font-weight: 800; line-height: 1;
+  box-shadow: 0 6px 16px rgba(79,70,229,.35);
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-add-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; }
+.nav-add-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-top: 2px; }
+.nav-add-label.active { color: var(--indigo); }
+
 @media (max-width: 560px) {
   .list-desc { display: none; }
   .list-row { flex-wrap: wrap; }
   .list-price { text-align: left; }
+  .support-link span { display: none; }
 }
 </style>
 </head>
@@ -253,42 +400,38 @@ footer .btn { display: inline-block; margin-top: 12px; }
 <!-- ===================== Header ===================== -->
 <header>
   <div class="header-inner">
-    <div class="logo">AHM7 <span>STORE</span></div>
+    <div class="logo" onclick="goRoute('#/')">AHM7 <span>STORE</span></div>
     <div class="header-spacer"></div>
-    <div class="currency-toggle" role="group" aria-label="Currency">
-      <button type="button" id="curPkr" class="active" onclick="setCurrency('pkr')">PKR ₨</button>
-      <button type="button" id="curUsdt" onclick="setCurrency('usdt')">USDT $</button>
-    </div>
-    <a class="support-link" href="https://t.me/ahm7storebot" target="_blank" rel="noopener">💬 Support</a>
+    <button type="button" class="wallet-chip hidden" id="walletChip" onclick="goRoute('#/funds')">💰 <span id="walletChipAmount">$0.00</span></button>
+    <div class="currency-toggle" role="group" aria-label="Currency" id="currencyToggle"></div>
+    <button type="button" class="btn btn-small hidden" id="loginBtn" onclick="goRoute('#/signin')">Login</button>
+    <button type="button" class="btn btn-small btn-ghost hidden" id="menuBtn" onclick="goRoute('#/menu')">☰ Menu</button>
   </div>
 </header>
 
-<!-- ===================== BROWSE VIEW ===================== -->
-<main id="view-browse">
-  <!-- Hero -->
+<!-- ===================== SHOP VIEW ===================== -->
+<main id="view-shop" class="view" style="padding-top:0;">
   <div class="hero">
     <h1>Premium Digital Products, <span>Low Prices</span></h1>
-    <p>Trusted digital products delivered instantly in Pakistan. Pay with Easypaisa, JazzCash, NayaPay or USDT — no Telegram account needed.</p>
+    <p>Trusted digital products delivered instantly in Pakistan. Add funds to your wallet or pay per order — Easypaisa, JazzCash, NayaPay, USDT, Binance &amp; Bybit.</p>
     <div class="badges">
       <span class="badge">⚡ Instant Delivery</span>
+      <span class="badge">💰 Wallet &amp; Add Funds</span>
       <span class="badge">🔒 Secure Payments</span>
       <span class="badge">🕐 24/7 Support</span>
     </div>
   </div>
 
   <div class="container">
-    <!-- Loading / error state for the product list -->
     <div id="productsLoading" class="loading">Loading products…</div>
     <div id="productsError" class="notice error hidden"></div>
 
-    <!-- Popular products -->
     <section class="block hidden" id="popularSection">
       <h2>🔥 Popular Products</h2>
       <p class="section-sub">Our best-selling products at unbeatable prices.</p>
       <div class="cards" id="popularGrid"></div>
     </section>
 
-    <!-- All products -->
     <section class="block hidden" id="allSection">
       <h2>All Products</h2>
       <p class="section-sub">Every product we sell — one click away.</p>
@@ -300,7 +443,6 @@ footer .btn { display: inline-block; margin-top: 12px; }
       <div id="noResults" class="empty hidden">No products match your search.</div>
     </section>
 
-    <!-- Why us -->
     <section class="block">
       <h2>Why us</h2>
       <p class="section-sub">&nbsp;</p>
@@ -309,6 +451,11 @@ footer .btn { display: inline-block; margin-top: 12px; }
           <div class="why-icon">⚡</div>
           <h3>Instant Delivery</h3>
           <p>Get your product details immediately after successful payment. No waiting, no manual steps.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-icon">💰</div>
+          <h3>Wallet &amp; Add Funds</h3>
+          <p>Top up your wallet once and buy in one tap — or pay per order, whichever you prefer.</p>
         </div>
         <div class="why-card">
           <div class="why-icon">🔒</div>
@@ -333,11 +480,21 @@ footer .btn { display: inline-block; margin-top: 12px; }
   </footer>
 </main>
 
+<!-- ===================== DETAIL VIEW ===================== -->
+<main id="view-detail" class="view hidden">
+  <div class="container">
+    <div class="panel" style="max-width:680px;">
+      <button type="button" class="back-link" onclick="goRoute('#/')">← Back to products</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+</main>
+
 <!-- ===================== CHECKOUT VIEW ===================== -->
 <main id="view-checkout" class="view hidden">
   <div class="container">
     <div class="panel">
-      <button type="button" class="back-link" onclick="goBrowse()">← Back to products</button>
+      <button type="button" class="back-link" onclick="goRoute('#/')">← Back to products</button>
       <h2>Checkout</h2>
       <p class="sub" id="checkoutProductName"></p>
 
@@ -369,7 +526,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
       </div>
 
       <div class="field">
-        <label>Payment method</label>
+        <label>How do you want to pay?</label>
         <div id="methodsLoading" class="loading" style="padding:16px 0;">Loading payment methods…</div>
         <div id="methodsError" class="notice error hidden"></div>
         <div class="method-list" id="methodList"></div>
@@ -421,7 +578,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
       <div id="proofNote" class="notice info hidden">Proof sent — the admin will review it, your product will appear here once approved.</div>
 
-      <button type="button" class="btn btn-ghost btn-block" onclick="goBrowse()">Cancel — back to products</button>
+      <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/')">Cancel — back to products</button>
       <p class="order-id-line" id="payOrderId"></p>
     </div>
   </div>
@@ -442,102 +599,365 @@ footer .btn { display: inline-block; margin-top: 12px; }
       <p class="order-id-line" id="deliveredOrderId"></p>
       <p class="order-id-line" id="deliveredEmailNote"></p>
       <br>
-      <button type="button" class="btn btn-ghost btn-block" onclick="goBrowse()">← Back to products</button>
+      <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/')">← Back to products</button>
     </div>
   </div>
 </main>
 
-<!-- ===================== FAILED VIEW (rejected / expired) ===================== -->
+<!-- ===================== FAILED VIEW ===================== -->
 <main id="view-failed" class="view hidden">
   <div class="container">
     <div class="panel" style="text-align:center;">
       <h2 id="failedTitle">Order update</h2>
       <p class="sub" id="failedText" style="margin-top:10px;"></p>
       <a class="btn" href="https://t.me/ahm7storebot" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:10px;">💬 Contact support</a><br>
-      <button type="button" class="btn btn-ghost btn-block" onclick="goBrowse()">Browse products</button>
+      <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/')">Browse products</button>
       <p class="order-id-line" id="failedOrderId"></p>
     </div>
   </div>
 </main>
 
+<!-- ===================== ADD FUNDS VIEW ===================== -->
+<main id="view-funds" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <button type="button" class="back-link" onclick="goRoute('#/menu')">← Back to menu</button>
+      <h2>Add Funds</h2>
+      <p class="sub">Top up your wallet, then buy any product in one tap.</p>
+
+      <div class="wallet-card">
+        <div class="wc-label">Wallet balance</div>
+        <div class="wc-amount" id="fundsBalance">$0.00</div>
+        <div class="wc-email" id="fundsEmail"></div>
+      </div>
+
+      <div id="fundsError" class="notice error hidden"></div>
+
+      <div class="field">
+        <label for="topupAmount">Amount (USD)</label>
+        <input type="number" id="topupAmount" placeholder="e.g. 10" min="1" step="0.01" inputmode="decimal">
+        <div class="hint">Enter the amount in USD you want to add to your wallet.</div>
+      </div>
+
+      <div class="field">
+        <label>Payment method</label>
+        <div id="topupMethodsLoading" class="loading" style="padding:16px 0;">Loading payment methods…</div>
+        <div id="topupMethodsError" class="notice error hidden"></div>
+        <div class="method-list" id="topupMethodList"></div>
+      </div>
+
+      <div class="field">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-weight:700;">You will pay</span>
+          <span style="font-size:20px;font-weight:800;" id="topupEstimated">—</span>
+        </div>
+        <div class="hint">The exact amount is confirmed on the next step — please pay exactly that amount.</div>
+      </div>
+
+      <button type="button" class="btn btn-block" id="createTopupBtn" onclick="createTopup()">Continue to Payment</button>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== TOPUP PAY VIEW ===================== -->
+<main id="view-funds-pay" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <h2 id="topupPayTitle">Complete your top-up</h2>
+      <p class="sub" id="topupPaySubtitle"></p>
+
+      <div id="topupPayError" class="notice error hidden"></div>
+
+      <div class="total-big">
+        <div class="label">Pay exactly</div>
+        <div class="amount" id="topupPayTotal">—</div>
+        <div class="method-line" id="topupPayMethodLine"></div>
+      </div>
+      <div class="countdown hidden" id="topupCountdown"></div>
+
+      <div class="pay-details" id="topupPayDetails"></div>
+      <div id="topupPayCopyFields"></div>
+
+      <div class="status-line" id="topupStatusLine">Waiting for your payment…</div>
+
+      <button type="button" class="btn btn-block" id="topupPaidBtn" onclick="markTopupPaid()">✅ I Made Payment</button>
+
+      <div class="divider">— or —</div>
+
+      <div class="field">
+        <label for="topupProofInput">📤 Upload payment screenshot</label>
+        <input type="file" id="topupProofInput" accept="image/*" onchange="uploadTopupProof(this)">
+        <div class="hint">If the payment is not found automatically, upload a screenshot and the admin will approve it manually.</div>
+      </div>
+
+      <div id="topupProofNote" class="notice info hidden">Proof sent — the admin will review it, your wallet will be credited once approved.</div>
+
+      <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/funds')">Cancel — back to Add Funds</button>
+      <p class="order-id-line" id="topupPayId"></p>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== ORDERS VIEW ===================== -->
+<main id="view-orders" class="view hidden">
+  <div class="container">
+    <div class="panel" style="max-width:680px;">
+      <h2>My Orders</h2>
+      <p class="sub">Your website orders — approved orders show your product details here.</p>
+      <div id="ordersError" class="notice error hidden"></div>
+      <div id="ordersLoading" class="loading">Loading your orders…</div>
+      <div id="ordersList"></div>
+      <div id="ordersEmpty" class="empty hidden">You have no orders yet. <a href="#/">Browse products</a> to buy something.</div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== TRANSACTIONS VIEW ===================== -->
+<main id="view-transactions" class="view hidden">
+  <div class="container">
+    <div class="panel" style="max-width:680px;">
+      <h2>Transactions</h2>
+      <p class="sub">Wallet top-ups and purchases.</p>
+      <div id="txnsError" class="notice error hidden"></div>
+      <div id="txnsLoading" class="loading">Loading transactions…</div>
+      <div id="txnsList"></div>
+      <div id="txnsEmpty" class="empty hidden">No transactions yet. <a href="#/funds">Add funds</a> to get started.</div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== SIGN IN VIEW ===================== -->
+<main id="view-signin" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <h2>🔐 Sign in</h2>
+      <p class="sub">Sign in to use your wallet, view orders and add funds.</p>
+      <div id="signinError" class="notice error hidden"></div>
+      <div id="signinGoogleWrap" class="hidden">
+        <button type="button" class="google-btn" id="googleSigninBtn">
+          <span class="g-mark"><span></span></span> Continue with Google
+        </button>
+        <div class="divider">— or continue with email —</div>
+      </div>
+      <div class="field">
+        <label for="signinEmail">Email address</label>
+        <input type="email" id="signinEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="signinPassword">Password</label>
+        <input type="password" id="signinPassword" placeholder="Your password" autocomplete="current-password">
+      </div>
+      <button type="button" class="btn btn-block" id="signinBtn" onclick="doSignin()">Sign in</button>
+      <p class="auth-switch">New here? <a href="#/signup">Create an account</a></p>
+      <p class="auth-switch">Need help? <a href="https://t.me/ahm7storebot" target="_blank" rel="noopener">Message us on Telegram</a></p>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== SIGN UP VIEW ===================== -->
+<main id="view-signup" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <h2>✨ Create an account</h2>
+      <p class="sub">One account for your wallet, orders and top-ups. It takes a minute.</p>
+      <div id="signupError" class="notice error hidden"></div>
+      <div id="signupGoogleWrap" class="hidden">
+        <button type="button" class="google-btn" id="googleSignupBtn">
+          <span class="g-mark"><span></span></span> Continue with Google
+        </button>
+        <div class="divider">— or continue with email —</div>
+      </div>
+      <div class="field">
+        <label for="signupEmail">Email address</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="signupWhatsapp">WhatsApp number</label>
+        <input type="tel" id="signupWhatsapp" placeholder="e.g. 03001234567" autocomplete="tel">
+        <div class="hint">For order updates.</div>
+      </div>
+      <div class="field">
+        <label for="signupPassword">Password</label>
+        <input type="password" id="signupPassword" placeholder="At least 6 characters" autocomplete="new-password">
+      </div>
+      <button type="button" class="btn btn-block" id="signupBtn" onclick="doSignup()">Create account</button>
+      <p class="auth-switch">Already have an account? <a href="#/signin">Sign in</a></p>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== MENU VIEW ===================== -->
+<main id="view-menu" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <h2>Menu</h2>
+      <p class="sub">Your account and shortcuts.</p>
+      <div id="menuLoggedOut">
+        <div class="notice info">You are browsing as a guest. Sign in to use your wallet, view orders and add funds.</div>
+        <button type="button" class="btn btn-block" onclick="goRoute('#/signin')">🔐 Sign in</button>
+        <br>
+        <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/signup')">✨ Create an account</button>
+      </div>
+      <div id="menuLoggedIn" class="hidden">
+        <div class="wallet-card">
+          <div class="wc-label">Wallet balance</div>
+          <div class="wc-amount" id="menuBalance">$0.00</div>
+          <div class="wc-email" id="menuEmail"></div>
+        </div>
+      </div>
+      <div class="menu-list">
+        <button type="button" class="menu-row" onclick="goRoute('#/orders')"><span class="menu-icon">📦</span> My Orders <span class="menu-arrow">›</span></button>
+        <button type="button" class="menu-row" onclick="goRoute('#/transactions')"><span class="menu-icon">🧾</span> Transactions <span class="menu-arrow">›</span></button>
+        <button type="button" class="menu-row" onclick="goRoute('#/funds')"><span class="menu-icon">💰</span> Add Funds <span class="menu-arrow">›</span></button>
+        <button type="button" class="menu-row" onclick="goRoute('#/help')"><span class="menu-icon">❓</span> Help &amp; Support <span class="menu-arrow">›</span></button>
+        <a class="menu-row" href="https://t.me/ahm7storebot" target="_blank" rel="noopener"><span class="menu-icon">💬</span> Chat with us on Telegram <span class="menu-arrow">›</span></a>
+        <button type="button" class="menu-row danger hidden" id="logoutRow" onclick="doLogout()"><span class="menu-icon">🚪</span> Log out <span class="menu-arrow">›</span></button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== HELP VIEW ===================== -->
+<main id="view-help" class="view hidden">
+  <div class="container">
+    <div class="panel" style="max-width:680px;">
+      <h2>Help &amp; Support</h2>
+      <p class="sub">Answers to the most common questions.</p>
+      <div class="faq-card">
+        <h3>💰 How do I top up my wallet?</h3>
+        <p>Sign in, open <b>Add Funds</b>, type the amount in USD and pick a payment method — Easypaisa, JazzCash, NayaPay, USDT, Binance or Bybit. Pay the exact amount shown. Most payments are found and credited automatically within a few minutes. If it is not found, upload a screenshot of your payment and the admin will approve it.</p>
+      </div>
+      <div class="faq-card">
+        <h3>🛒 How do I buy a product?</h3>
+        <p>Pick a product, choose the quantity and pay with your wallet balance — or pay directly with Easypaisa, JazzCash, NayaPay, USDT, Binance or Bybit. Your product details appear on this page right after the payment is confirmed, and a copy is also emailed to you. You can also find them later on the <b>My Orders</b> page.</p>
+      </div>
+      <div class="faq-card">
+        <h3>⏱️ How long does delivery take?</h3>
+        <p>Usually instantly, or a few minutes after your payment is confirmed. Check the <b>My Orders</b> page — if your order is still waiting, contact support with your order ID.</p>
+      </div>
+      <div class="faq-card">
+        <h3>↩️ Is there a refund or replacement policy?</h3>
+        <p>No refunds — please read the product description before buying. If something is wrong with the item you received, contact support and we will replace it where possible.</p>
+      </div>
+      <div class="faq-card">
+        <h3>⚠️ How do I report a problem?</h3>
+        <p>Message us on Telegram <b>@ahm7storebot</b> with your order ID and a screenshot of the problem, and we will help you.</p>
+      </div>
+      <div class="faq-card">
+        <h3>💳 What payments are accepted?</h3>
+        <p>Easypaisa, JazzCash, NayaPay, USDT, Binance and Bybit. You can pay per order, or top up your wallet once and buy in one tap.</p>
+      </div>
+      <div style="text-align:center;margin-top:18px;">
+        <a class="btn" href="https://t.me/ahm7storebot" target="_blank" rel="noopener">💬 Chat with us on Telegram</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== Bottom navigation ===================== -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button type="button" class="nav-item" id="navShop" onclick="goRoute('#/')"><span class="nav-icon">🛍️</span>Shop</button>
+    <button type="button" class="nav-item" id="navOrders" onclick="goRoute('#/orders')"><span class="nav-icon">📦</span>Orders</button>
+    <div class="nav-add-wrap">
+      <button type="button" class="nav-add" id="navAdd" onclick="goRoute('#/funds')" aria-label="Add Funds">+</button>
+      <span class="nav-add-label" id="navAddLabel">Add Funds</span>
+    </div>
+    <button type="button" class="nav-item" id="navTxns" onclick="goRoute('#/transactions')"><span class="nav-icon">🧾</span>Transactions</button>
+    <button type="button" class="nav-item" id="navMenu" onclick="goRoute('#/menu')"><span class="nav-icon">☰</span>Menu</button>
+  </div>
+</nav>
+
 <script>
 /* ============================================================
-   AHM7 STORE — single-page web store
-   Reads products live from the bot API (same MongoDB as the
-   Telegram bot, so bot changes show here automatically).
+   AHM7 STORE v17.105 — full web store (wallet-first)
+   Products live from the bot API (same MongoDB as Telegram).
+   Auth: JWT in localStorage ("ahm7_token").
    ============================================================ */
 
 // ---- API base: change this one line if the API moves ----
 const API_BASE = "https://testing.ahm7.tech/v1";
 
 // ---- State ----
-let allProducts = [];       // raw products from GET /products (bundles already filtered out)
-let methods = null;         // payment methods from GET /web/methods (loaded lazily)
-let currency = "pkr";       // "pkr" | "usdt" — browsing currency, default PKR
+let allProducts = [];
+let productsLoaded = false;
+let productsLoading = false;
+let methods = null;
+let currency = "usd";          // "usd" | "pkr" | "inr" (browsing currency)
 let activeCategory = "All";
-let checkoutProduct = null; // product object being bought
+let token = localStorage.getItem("ahm7_token") || "";
+let user = null;               // {email, whatsapp, walletUsdt}
+let siteConfig = null;         // {googleClientId, currencies}
+let configLoaded = false;
+let redirectAfterLogin = "#/";
+let checkoutProduct = null;
 let checkoutQty = 1;
+let detailProduct = null;
+let detailQty = 1;
+let detailAgreed = false;
+let checkoutAgreed = false;
 let selectedMethodId = null;
-let currentOrder = null;    // order object from POST /web/orders
-let pollTimer = null;       // 15s status poll
-let countdownTimer = null;  // 1s countdown
+let selectedPay = null;        // {type:"wallet"} | {type:"method", id}
+let currentOrder = null;
+let currentTopup = null;
+let pollTimer = null;
+let countdownTimer = null;
+let topupMethodId = null;
+let topupAmount = 0;
+let googleScriptLoaded = false;
 
 /* ============================================================
    Small helpers
    ============================================================ */
-
-// Escape text coming from the API before putting it in HTML.
 function esc(s) {
   return String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
-// Format a price. PKR/INR are whole numbers: "₨1,234". USDT: "$1.23".
+// Price key in the API payload for a browsing currency ("usd" -> "usdt").
+function priceKey(cur) { return cur === "usd" ? "usdt" : cur; }
+
+// Format a price. PKR/INR are whole numbers; USD: "$1.23".
 function fmtPrice(value, cur) {
   const n = Number(value || 0);
   if (cur === "pkr") return "₨" + Math.ceil(n).toLocaleString("en-US");
   if (cur === "inr") return "₹" + Math.ceil(n).toLocaleString("en-US");
   return "$" + n.toFixed(2);
 }
+function fmtUsd(n) { return "$" + Number(n || 0).toFixed(2); }
 
 // Price the buyer pays for a product in the browsing currency.
 function payPrice(p, cur) {
   const ep = p.effectivePrices || p.prices || {};
-  return Number(ep[cur] != null ? ep[cur] : (ep.usdt || 0));
+  const k = priceKey(cur);
+  return Number(ep[k] != null ? ep[k] : (ep.usdt || 0));
 }
-// Struck-through original price (only meaningful when hasDiscount is true).
 function origPrice(p, cur) {
   const op = p.originalPrices || {};
-  return Number(op[cur] != null ? op[cur] : 0);
+  const k = priceKey(cur);
+  return Number(op[k] != null ? op[k] : 0);
 }
-
-// Short initials for the gradient tile, e.g. "ChatGPT Plus" -> "CP".
 function initials(name) {
   const words = String(name || "?").trim().split(/\s+/).filter(Boolean);
   const first = (words[0] || "?").charAt(0);
   const second = words.length > 1 ? words[1].charAt(0) : (words[0] || "").charAt(1) || "";
   return (first + second).toUpperCase();
 }
-
-// Deterministic gradient per product name (so the same product always looks the same).
 const GRADIENTS = [
-  "linear-gradient(135deg,#16a34a,#059669)", "linear-gradient(135deg,#2563eb,#7c3aed)",
-  "linear-gradient(135deg,#db2777,#f59e0b)", "linear-gradient(135deg,#0891b2,#22c55e)",
-  "linear-gradient(135deg,#ea580c,#dc2626)", "linear-gradient(135deg,#4f46e5,#06b6d4)",
-  "linear-gradient(135deg,#65a30d,#14b8a6)", "linear-gradient(135deg,#be185d,#8b5cf6)"
+  "linear-gradient(135deg,#4F46E5,#7C3AED)", "linear-gradient(135deg,#2563EB,#06B6D4)",
+  "linear-gradient(135deg,#DB2777,#F59E0B)", "linear-gradient(135deg,#0891B2,#22C55E)",
+  "linear-gradient(135deg,#EA580C,#DC2626)", "linear-gradient(135deg,#16A34A,#059669)",
+  "linear-gradient(135deg,#65A30D,#14B8A6)", "linear-gradient(135deg,#BE185D,#8B5CF6)"
 ];
 function tileGradient(name) {
   let h = 0;
   for (const ch of String(name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
   return GRADIENTS[h % GRADIENTS.length];
 }
-
-// Copy text to clipboard (with a fallback for older browsers).
 async function copyText(text, btn) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (e) {
+  try { await navigator.clipboard.writeText(text); }
+  catch (e) {
     const ta = document.createElement("textarea");
     ta.value = text; document.body.appendChild(ta); ta.select();
     try { document.execCommand("copy"); } catch (e2) {}
@@ -549,14 +969,8 @@ async function copyText(text, btn) {
     setTimeout(() => { btn.textContent = old; }, 1500);
   }
 }
+function copyFieldValue(btn) { copyText(btn.getAttribute("data-value") || "", btn); }
 
-// Copy handler for buttons that carry their value in a data-value attribute
-// (safer than inlining the value into an onclick string).
-function copyFieldValue(btn) {
-  copyText(btn.getAttribute("data-value") || "", btn);
-}
-
-// Turn an API error body into plain words for the buyer.
 function friendlyError(err) {
   const code = String((err && err.error) || err || "").toLowerCase();
   const map = {
@@ -566,24 +980,34 @@ function friendlyError(err) {
     method_not_found: "That payment method is not available. Please pick another one.",
     invalid_email: "Please check your email address.",
     email_required: "Please enter your email address.",
+    invalid_credentials: "Wrong email or password. Please try again.",
+    email_exists: "An account with this email already exists. Try signing in instead.",
+    invalid_password: "Password must be at least 6 characters.",
+    invalid_whatsapp: "Please enter your WhatsApp number.",
     quantity_invalid: "Please choose a quantity between 1 and 100.",
     terms_required: "Please tick the box to agree to the product terms.",
     order_not_found: "That order was not found. Please start a new order.",
     order_expired: "This payment window has expired.",
     order_already_paid: "This order was already paid.",
+    topup_not_found: "That top-up was not found. Please start a new one.",
+    insufficient_balance: "Your wallet balance is not enough for this order. Please add funds first.",
+    unauthorized: "Please sign in and try again.",
+    google_not_configured: "Google sign-in is not available right now. Please use email instead.",
     too_many_requests: "Too many tries — please wait a moment and try again."
   };
   if (map[code]) return map[code];
-  // Unknown error: show the server message if it looks human-readable, else a generic line.
-  const raw = err && err.error ? String(err.error) : "";
+  const raw = err && (err.message || err.error) ? String(err.message || err.error) : "";
   if (raw && raw.length < 140 && !/^\s*$/.test(raw)) return raw;
   return "Something went wrong. Please try again.";
 }
 
-// Generic JSON fetch with network-error handling. Returns {ok, status, data}.
+// Generic JSON fetch. opts.auth adds the Bearer token when we have one.
 async function apiFetch(path, options) {
+  options = options || {};
+  const headers = Object.assign({}, options.headers || {});
+  if (options.auth && token) headers["Authorization"] = "Bearer " + token;
   try {
-    const res = await fetch(API_BASE + path, options);
+    const res = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
     let data = null;
     try { data = await res.json(); } catch (e) { data = null; }
     return { ok: res.ok, status: res.status, data };
@@ -593,38 +1017,173 @@ async function apiFetch(path, options) {
 }
 
 function showView(id) {
-  ["view-browse", "view-checkout", "view-pay", "view-delivered", "view-failed"]
-    .forEach(v => document.getElementById(v).classList.toggle("hidden", v !== id));
+  document.querySelectorAll("main.view").forEach(v => v.classList.toggle("hidden", v.id !== id));
   window.scrollTo({ top: 0 });
+  setActiveNav(id);
 }
-
 function stopTimers() {
   if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
   if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
 }
-
-function goBrowse() {
-  stopTimers();
-  currentOrder = null;
-  showView("view-browse");
+function goRoute(hash) {
+  if (location.hash === hash) { route(); }
+  else { location.hash = hash; }
 }
 
 /* ============================================================
-   Currency toggle
+   Auth state + header
    ============================================================ */
+function saveSession(tok, usr) {
+  token = tok || "";
+  user = usr || null;
+  if (token) localStorage.setItem("ahm7_token", token);
+  else localStorage.removeItem("ahm7_token");
+  updateHeader();
+}
+function clearSession() {
+  token = "";
+  user = null;
+  localStorage.removeItem("ahm7_token");
+  updateHeader();
+}
+function isLoggedIn() { return Boolean(token && user); }
+
+function updateHeader() {
+  const loggedIn = isLoggedIn();
+  document.getElementById("walletChip").classList.toggle("hidden", !loggedIn);
+  document.getElementById("loginBtn").classList.toggle("hidden", loggedIn);
+  document.getElementById("menuBtn").classList.toggle("hidden", !loggedIn);
+  if (loggedIn) {
+    document.getElementById("walletChipAmount").textContent = fmtUsd(user.walletUsdt);
+    document.getElementById("menuBtn").textContent = "👤 " + (user.email || "Menu").split("@")[0];
+  }
+}
+function setActiveNav(viewId) {
+  const map = {
+    "view-shop": "navShop",
+    "view-orders": "navOrders",
+    "view-funds": "navAddLabel",
+    "view-funds-pay": "navAddLabel",
+    "view-transactions": "navTxns",
+    "view-menu": "navMenu"
+  };
+  ["navShop", "navOrders", "navTxns", "navMenu"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("active", map[viewId] === id);
+  });
+  const addLabel = document.getElementById("navAddLabel");
+  if (addLabel) addLabel.classList.toggle("active", map[viewId] === "navAddLabel");
+}
+
+// Load the logged-in user (GET /v1/web/me). 401 -> session is dead.
+async function loadMe() {
+  if (!token) return false;
+  const r = await apiFetch("/web/me", { auth: true });
+  if (r.ok && r.data && r.data.ok && r.data.user) {
+    user = r.data.user;
+    updateHeader();
+    return true;
+  }
+  if (r.status === 401) clearSession();
+  return false;
+}
+async function refreshBalance() {
+  if (!token) return;
+  const r = await apiFetch("/web/me", { auth: true });
+  if (r.ok && r.data && r.data.ok && r.data.user) { user = r.data.user; updateHeader(); }
+}
+
+/* ============================================================
+   Site config (Google sign-in availability + currencies)
+   ============================================================ */
+async function loadConfig() {
+  if (configLoaded) return siteConfig;
+  configLoaded = true;
+  const r = await apiFetch("/web/config");
+  if (r.ok && r.data && r.data.ok) siteConfig = r.data;
+  else siteConfig = { googleClientId: null, currencies: ["usd", "pkr", "inr"] };
+  renderCurrencyToggle();
+  return siteConfig;
+}
+function googleEnabled() {
+  return Boolean(siteConfig && siteConfig.googleClientId);
+}
+function renderCurrencyToggle() {
+  const list = (siteConfig && Array.isArray(siteConfig.currencies) && siteConfig.currencies.length)
+    ? siteConfig.currencies.map(c => String(c).toLowerCase())
+    : ["usd", "pkr", "inr"];
+  const labels = { usd: "USD $", pkr: "PKR ₨", inr: "INR ₹" };
+  const el = document.getElementById("currencyToggle");
+  el.innerHTML = list.map(c =>
+    `<button type="button" id="cur-${c}" class="${c === currency ? "active" : ""}" onclick="setCurrency('${c}')">${labels[c] || c.toUpperCase()}</button>`
+  ).join("");
+}
 function setCurrency(cur) {
   currency = cur;
-  document.getElementById("curPkr").classList.toggle("active", cur === "pkr");
-  document.getElementById("curUsdt").classList.toggle("active", cur === "usdt");
+  renderCurrencyToggle();
   renderPopular();
   renderAllProducts();
+  if (detailProduct) renderDetail();
   if (checkoutProduct) updateCheckoutTotals();
+}
+
+/* ============================================================
+   Hash router
+   ============================================================ */
+async function route() {
+  const raw = (location.hash || "#/").replace(/^#\/?/, "");
+  const parts = raw.split("/").filter(Boolean);
+  const page = parts[0] || "";
+  const arg = parts[1] ? decodeURIComponent(parts[1]) : "";
+
+  stopTimers();
+
+  if (page === "" || page === "shop") {
+    showView("view-shop");
+    loadProducts();
+    return;
+  }
+  if (page === "detail") {
+    await loadProducts();
+    showDetail(arg);
+    return;
+  }
+  if (page === "checkout") {
+    await loadProducts();
+    startCheckoutByKeyword(arg);
+    return;
+  }
+  if (page === "funds") {
+    if (!isLoggedIn()) { redirectAfterLogin = "#/funds"; goRoute("#/signin"); return; }
+    showFunds();
+    return;
+  }
+  if (page === "orders") {
+    if (!isLoggedIn()) { redirectAfterLogin = "#/orders"; goRoute("#/signin"); return; }
+    showOrders();
+    return;
+  }
+  if (page === "transactions") {
+    if (!isLoggedIn()) { redirectAfterLogin = "#/transactions"; goRoute("#/signin"); return; }
+    showTransactions();
+    return;
+  }
+  if (page === "signin") { showView("view-signin"); maybeShowGoogle("signin"); return; }
+  if (page === "signup") { showView("view-signup"); maybeShowGoogle("signup"); return; }
+  if (page === "menu") { showMenu(); return; }
+  if (page === "help") { showView("view-help"); return; }
+  // Unknown route -> shop.
+  showView("view-shop");
+  loadProducts();
 }
 
 /* ============================================================
    Load + render products  (GET /products?limit=100)
    ============================================================ */
 async function loadProducts() {
+  if (productsLoaded) return true;
+  if (productsLoading) return false;
+  productsLoading = true;
   const loadingEl = document.getElementById("productsLoading");
   const errorEl = document.getElementById("productsError");
   loadingEl.classList.remove("hidden");
@@ -633,30 +1192,31 @@ async function loadProducts() {
   document.getElementById("allSection").classList.add("hidden");
 
   const r = await apiFetch("/products?limit=100");
+  productsLoading = false;
   if (!r.ok || !r.data || r.data.ok !== true || !Array.isArray(r.data.products)) {
     loadingEl.classList.add("hidden");
     errorEl.classList.remove("hidden");
     errorEl.innerHTML = esc(r.networkError
       ? "Could not reach the store. Please check your connection and try again."
       : friendlyError(r.data)) +
-      ' <button type="button" class="btn btn-small" style="margin-left:8px;" onclick="loadProducts()">Retry</button>';
-    return;
+      ' <button type="button" class="btn btn-small" style="margin-left:8px;" onclick="retryLoadProducts()">Retry</button>';
+    return false;
   }
-
-  // Bundles are sold only inside Telegram — hide them on the website.
   allProducts = r.data.products.filter(p => !p.isBundle);
+  productsLoaded = true;
   loadingEl.classList.add("hidden");
   document.getElementById("popularSection").classList.remove("hidden");
   document.getElementById("allSection").classList.remove("hidden");
   renderCategoryChips();
   renderPopular();
   renderAllProducts();
+  return true;
 }
+function retryLoadProducts() { productsLoaded = false; loadProducts(); }
 
-// "Popular" = in-stock products first, discounted ones first, up to 8.
-// (The API has no popularity count, so this is a stable best-effort pick.)
 function renderPopular() {
   const grid = document.getElementById("popularGrid");
+  if (!grid) return;
   const popular = allProducts
     .filter(p => p.inStock)
     .sort((a, b) => (b.hasDiscount ? 1 : 0) - (a.hasDiscount ? 1 : 0))
@@ -664,13 +1224,16 @@ function renderPopular() {
   grid.innerHTML = popular.map(p => productCardHtml(p)).join("") ||
     '<p class="empty">No products available right now.</p>';
 }
-
-function productCardHtml(p) {
+function priceHtml(p) {
   const price = payPrice(p, currency);
   const orig = origPrice(p, currency);
   const hasDisc = p.hasDiscount && orig > price;
   const pct = hasDisc ? Math.round((1 - price / orig) * 100) : 0;
   const kindLabel = p.discountKind === "flash" ? "Flash Deal" : (p.discountKind === "offer" ? "Offer" : "");
+  return `<span class="price">${hasDisc ? `<span class="old">${fmtPrice(orig, currency)}</span>` : ""}${fmtPrice(price, currency)}
+    ${hasDisc ? `<span class="discount-tag">−${pct}%${kindLabel ? " • " + kindLabel : ""}</span>` : ""}</span>`;
+}
+function productCardHtml(p) {
   const out = !p.inStock;
   return `
   <div class="card">
@@ -680,15 +1243,14 @@ function productCardHtml(p) {
       <div class="card-name">${esc(p.name)}</div>
       <div class="card-desc">${esc(p.description || "")}</div>
       <div class="card-foot">
-        <span class="price">${hasDisc ? `<span class="old">${fmtPrice(orig, currency)}</span>` : ""}${fmtPrice(price, currency)}
-          ${hasDisc ? `<span class="discount-tag">−${pct}%${kindLabel ? " • " + kindLabel : ""}</span>` : ""}</span>
+        ${priceHtml(p)}
+        <span class="stock-badge ${out ? "out" : "in"}">${out ? "Out of Stock" : "In Stock"}</span>
       </div>
       <button type="button" class="btn btn-block" ${out ? "disabled" : ""}
-        onclick="startCheckout('${esc(p.id)}')">${out ? "Out of stock" : "Buy Now"}</button>
+        onclick="goRoute('#/detail/${esc(p.keyword || p.id)}')">${out ? "Out of stock" : "View Product"}</button>
     </div>
   </div>`;
 }
-
 function renderCategoryChips() {
   const cats = ["All"];
   allProducts.forEach(p => {
@@ -699,15 +1261,15 @@ function renderCategoryChips() {
     `<button type="button" class="chip ${c === activeCategory ? "active" : ""}"
       onclick="setCategory('${esc(c)}')">${esc(c)}</button>`).join("");
 }
-
 function setCategory(c) {
   activeCategory = c;
   renderCategoryChips();
   renderAllProducts();
 }
-
 function renderAllProducts() {
-  const q = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+  const input = document.getElementById("searchInput");
+  if (!input) return;
+  const q = (input.value || "").trim().toLowerCase();
   const list = document.getElementById("allList");
   const filtered = allProducts.filter(p => {
     if (activeCategory !== "All" && (p.category || "Other").trim() !== activeCategory) return false;
@@ -716,11 +1278,9 @@ function renderAllProducts() {
   });
   document.getElementById("noResults").classList.toggle("hidden", filtered.length > 0);
   list.innerHTML = filtered.map(p => {
-    const price = payPrice(p, currency);
-    const orig = origPrice(p, currency);
-    const hasDisc = p.hasDiscount && orig > price;
-    const kindLabel = p.discountKind === "flash" ? "Flash Deal" : (p.discountKind === "offer" ? "Offer" : "");
     const out = !p.inStock;
+    const kindLabel = p.discountKind === "flash" ? "Flash Deal" : (p.discountKind === "offer" ? "Offer" : "");
+    const hasDisc = p.hasDiscount && origPrice(p, currency) > payPrice(p, currency);
     return `
     <div class="list-row">
       <div class="list-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>
@@ -730,38 +1290,137 @@ function renderAllProducts() {
         <div class="list-desc">${esc(p.description || "")}</div>
       </div>
       <div class="list-price">
-        <div class="price">${hasDisc ? `<span class="old">${fmtPrice(orig, currency)}</span>` : ""}${fmtPrice(price, currency)}</div>
-        ${out ? `<div class="out-tag">Out of stock</div>` : ""}
+        <div>${priceHtml(p)}</div>
+        ${out ? `<div class="out-tag">Out of stock</div>` : `<div><span class="stock-badge in">In Stock</span></div>`}
       </div>
-      <button type="button" class="btn" ${out ? "disabled" : ""} onclick="startCheckout('${esc(p.id)}')">${out ? "Out of stock" : "Buy"}</button>
+      <button type="button" class="btn" ${out ? "disabled" : ""} onclick="goRoute('#/detail/${esc(p.keyword || p.id)}')">${out ? "Out of stock" : "View"}</button>
     </div>`;
   }).join("");
 }
 
 /* ============================================================
-   Checkout  (product -> quantity -> email -> terms -> method)
+   Product detail  (#/detail/:keyword)
    ============================================================ */
+function findProduct(keyword) {
+  const k = String(keyword || "");
+  return allProducts.find(p => String(p.keyword || "") === k)
+      || allProducts.find(p => String(p.id) === k)
+      || null;
+}
+function showDetail(keyword) {
+  const p = findProduct(keyword);
+  const box = document.getElementById("detailContent");
+  if (!p) {
+    box.innerHTML = '<div class="notice error">This product is no longer available.</div>' +
+      '<button type="button" class="btn btn-block" onclick="goRoute(\'#/\')">Browse products</button>';
+    showView("view-detail");
+    return;
+  }
+  detailProduct = p;
+  detailQty = 1;
+  detailAgreed = false;
+  renderDetail();
+  showView("view-detail");
+}
+function renderDetail() {
+  const p = detailProduct;
+  if (!p) return;
+  const out = !p.inStock;
+  const stock = Number(p.stock || 0);
+  const stockText = out ? "Out of stock"
+    : (stock > 0 ? `In Stock (${stock} available)` : "In Stock (unlimited)");
+  const hasTerms = Boolean((p.termsAndConditions || "").trim());
+  const max = maxQtyFor(p);
+  document.getElementById("detailContent").innerHTML = `
+    <div class="detail-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>
+    <span class="card-cat">${esc(p.category || "Product")}</span>
+    <h2 style="margin-top:8px;">${esc(p.name)}</h2>
+    <div class="detail-price-row">${priceHtml(p)}</div>
+    <div class="detail-stock ${out ? "out" : "in"}">${out ? "🔴 " : "🟢 "}${esc(stockText)}</div>
+    <p class="detail-desc">${esc(p.description || "")}</p>
+    <div class="detail-note">⚡ <b>Automatic Delivery</b> — check your Orders page to get your item after purchase. Order updates are sent by email.</div>
+    <div class="field">
+      <label>Quantity</label>
+      <div class="qty-presets" id="detailPresets">
+        ${[1, 2, 5, 10].map(n => `<button type="button" class="qty-preset ${detailQty === n ? "active" : ""}" data-qty="${n}" onclick="setDetailQty(${n})" ${n > max ? "disabled" : ""}>${n}</button>`).join("")}
+        <button type="button" class="qty-preset" id="detailCustomBtn" onclick="showDetailCustomQty()">Custom</button>
+      </div>
+      <div id="detailCustomWrap" class="hidden">
+        <input type="number" id="detailCustomQty" min="1" max="${max}" value="${detailQty}" inputmode="numeric" style="width:120px;padding:10px 12px;font-size:15px;border:1px solid var(--line);border-radius:12px;" onchange="setDetailQty(Number(this.value))">
+      </div>
+      <div class="tier-hint" id="detailTierHint"></div>
+    </div>
+    ${hasTerms ? `
+    <div class="field">
+      <label>Product terms &amp; conditions</label>
+      <div class="terms-box">${esc(p.termsAndConditions)}</div>
+      <label class="terms-check"><input type="checkbox" id="detailTermsCheck" ${detailAgreed ? "checked" : ""} onchange="detailAgreed = this.checked;"> I agree to the terms &amp; conditions above</label>
+    </div>` : ""}
+    <div class="total-row">
+      <span class="t-label">Total Price</span>
+      <span class="t-value" id="detailTotal">—</span>
+    </div>
+    <button type="button" class="btn btn-block" id="detailBuyBtn" ${out ? "disabled" : ""} onclick="buyFromDetail()">${out ? "Out of stock" : "Buy Now"}</button>
+    <br>
+    <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/help')">❓ Help</button>
+  `;
+  updateDetailTotals();
+}
+function updateDetailTotals() {
+  const p = detailProduct;
+  if (!p) return;
+  const est = estimateTotal(p, detailQty, currency);
+  const totalEl = document.getElementById("detailTotal");
+  if (totalEl) totalEl.textContent = fmtPrice(est.total, currency);
+  const tiers = (p.bulkTiers || []).slice().sort((a, b) => a.minQty - b.minQty);
+  const hintEl = document.getElementById("detailTierHint");
+  if (hintEl) hintEl.textContent = tiers.length
+    ? tiers.map(t => `Buy ${t.minQty}+ → ${fmtPrice(tierUnitPrice(p, t, currency), currency)} each`).join("  •  ")
+    : "";
+}
+function setDetailQty(n) {
+  const p = detailProduct;
+  if (!p) return;
+  const max = maxQtyFor(p);
+  detailQty = Math.min(max, Math.max(1, Math.floor(Number(n) || 1)));
+  document.querySelectorAll("#detailPresets .qty-preset").forEach(b => {
+    b.classList.toggle("active", Number(b.getAttribute("data-qty")) === detailQty);
+  });
+  const cw = document.getElementById("detailCustomWrap");
+  if (cw) cw.classList.add("hidden");
+  updateDetailTotals();
+}
+function showDetailCustomQty() {
+  const cw = document.getElementById("detailCustomWrap");
+  if (cw) { cw.classList.remove("hidden"); document.getElementById("detailCustomQty").focus(); }
+  document.querySelectorAll("#detailPresets .qty-preset").forEach(b => b.classList.remove("active"));
+}
+function buyFromDetail() {
+  const p = detailProduct;
+  if (!p || !p.inStock) return;
+  const hasTerms = Boolean((p.termsAndConditions || "").trim());
+  if (hasTerms && !detailAgreed) {
+    alert("Please tick the box to agree to the product terms.");
+    return;
+  }
+  checkoutAgreed = detailAgreed;
+  goRoute("#/checkout/" + encodeURIComponent(p.keyword || p.id));
+}
 
-// Which currency an order is charged in, based on the payment method.
-// PKR/INR methods charge in that currency; USDT/Binance/Bybit all charge USDT.
+/* ============================================================
+   Checkout  (#/checkout/:keyword)
+   ============================================================ */
 function methodCurrency(m) {
   const t = String(m.paymentType || "").toLowerCase();
   if (t === "pkr") return "pkr";
   if (t === "inr") return "inr";
   return "usdt";
 }
-
-// Max quantity a buyer can pick: 1–100, and never more than the stock on hand.
-// (Unlimited products have stock 0 but inStock true, so they allow up to 100.)
 function maxQtyFor(p) {
   const stock = Number(p.stock || 0);
   if (stock > 0) return Math.min(100, stock);
   return 100;
 }
-
-// Unit price for a bulk tier in the given currency.
-// Tier unitPrice is a direct USDT price when present (> 0); otherwise the
-// percent discount applies to the product's effective price.
 function tierUnitPrice(p, tier, cur) {
   const usdtUnit = tier.unitPrice > 0
     ? Number(tier.unitPrice)
@@ -771,9 +1430,6 @@ function tierUnitPrice(p, tier, cur) {
   if (usdtBase > 0) return Math.ceil(usdtUnit * payPrice(p, cur) / usdtBase);
   return usdtUnit;
 }
-
-// Estimated total for the current checkout (bulk tier applied).
-// The EXACT total comes from POST /web/orders and is shown on the pay screen.
 function estimateTotal(p, qty, cur) {
   let unit = payPrice(p, cur);
   const tiers = (p.bulkTiers || []).slice().sort((a, b) => b.minQty - a.minQty);
@@ -782,38 +1438,42 @@ function estimateTotal(p, qty, cur) {
   }
   return { unit, total: unit * qty };
 }
-
-function startCheckout(productId) {
-  const p = allProducts.find(x => String(x.id) === String(productId));
-  if (!p) return;
-  if (!p.inStock) { alert("This product is out of stock right now."); return; }
+function startCheckoutByKeyword(keyword) {
+  const p = findProduct(keyword);
+  if (!p) {
+    showView("view-checkout");
+    document.getElementById("checkoutError").textContent = "This product is no longer available.";
+    document.getElementById("checkoutError").classList.remove("hidden");
+    return;
+  }
+  if (!p.inStock) { goRoute("#/detail/" + encodeURIComponent(p.keyword || p.id)); return; }
   stopTimers();
   checkoutProduct = p;
-  checkoutQty = 1;
+  checkoutQty = (detailProduct === p) ? detailQty : 1;
+  checkoutAgreed = (detailProduct === p) ? detailAgreed : false;
   selectedMethodId = null;
+  selectedPay = null;
   document.getElementById("checkoutProductName").textContent = p.name;
   document.getElementById("checkoutError").classList.add("hidden");
   document.getElementById("emailError").classList.add("hidden");
   document.getElementById("termsError").classList.add("hidden");
+  const emailInput = document.getElementById("emailInput");
+  if (isLoggedIn() && user.email) emailInput.value = user.email;
 
-  // Quantity stepper
   updateQtyUI();
-
-  // Terms: only shown when the product actually has terms.
   const hasTerms = Boolean((p.termsAndConditions || "").trim());
   document.getElementById("termsField").classList.toggle("hidden", !hasTerms);
   if (hasTerms) {
     document.getElementById("termsBox").textContent = p.termsAndConditions;
-    document.getElementById("termsCheck").checked = false;
+    document.getElementById("termsCheck").checked = checkoutAgreed;
   }
-
   showView("view-checkout");
   loadMethods();
   updateCheckoutTotals();
 }
-
 function updateQtyUI() {
   const p = checkoutProduct;
+  if (!p) return;
   const max = maxQtyFor(p);
   document.getElementById("qtyNum").textContent = checkoutQty;
   document.getElementById("qtyMinus").disabled = checkoutQty <= 1;
@@ -821,35 +1481,43 @@ function updateQtyUI() {
   const stock = Number(p.stock || 0);
   document.getElementById("qtyStockHint").textContent =
     (stock > 0 && stock <= 10) ? `Only ${stock} left in stock` : "";
-  // Bulk tier hints, e.g. "Buy 3+ → ₨450 each"
   const tiers = (p.bulkTiers || []).slice().sort((a, b) => a.minQty - b.minQty);
-  const cur = selectedMethod ? methodCurrency(selectedMethod) : currency;
+  const cur = checkoutCurrency();
   document.getElementById("tierHint").textContent = tiers.length
     ? tiers.map(t => `Buy ${t.minQty}+ → ${fmtPrice(tierUnitPrice(p, t, cur), cur)} each`).join("  •  ")
     : "";
 }
-
 function changeQty(d) {
   const max = maxQtyFor(checkoutProduct);
   checkoutQty = Math.min(max, Math.max(1, checkoutQty + d));
   updateQtyUI();
   updateCheckoutTotals();
 }
-
+// Currency the current checkout total is shown in: wallet = USDT,
+// a picked method = its currency, otherwise the browsing currency.
+function checkoutCurrency() {
+  if (selectedPay && selectedPay.type === "wallet") return "usdt";
+  const m = selectedMethod();
+  if (m) return methodCurrency(m);
+  return currency;
+}
 function selectedMethod() {
   return (methods || []).find(m => String(m.id) === String(selectedMethodId)) || null;
 }
-
+function walletCanCover() {
+  if (!isLoggedIn() || !checkoutProduct) return false;
+  const est = estimateTotal(checkoutProduct, checkoutQty, "usdt");
+  return Number(user.walletUsdt || 0) >= est.total && est.total > 0;
+}
 function updateCheckoutTotals() {
   if (!checkoutProduct) return;
-  const m = selectedMethod();
-  const cur = m ? methodCurrency(m) : currency;
+  const cur = checkoutCurrency();
   const est = estimateTotal(checkoutProduct, checkoutQty, cur);
   document.getElementById("estimatedTotal").textContent = fmtPrice(est.total, cur);
   updateQtyUI();
+  // Re-render the wallet option state (balance may now cover / not cover).
+  renderMethods();
 }
-
-/* ---- Payment methods: GET /web/methods ---- */
 async function loadMethods() {
   const listEl = document.getElementById("methodList");
   const errEl = document.getElementById("methodsError");
@@ -871,36 +1539,56 @@ async function loadMethods() {
   methods = r.data.methods;
   renderMethods();
 }
-
 function renderMethods() {
   const listEl = document.getElementById("methodList");
-  if (!methods.length) {
-    listEl.innerHTML = '<p class="empty">No payment methods available right now. Please try again later.</p>';
-    return;
+  if (!listEl || !methods) return;
+  let html = "";
+  if (isLoggedIn()) {
+    const canCover = walletCanCover();
+    const bal = fmtUsd(user.walletUsdt);
+    html += `
+    <label class="method-option wallet-option ${selectedPay && selectedPay.type === "wallet" ? "selected" : ""}">
+      <input type="radio" name="payOption" ${selectedPay && selectedPay.type === "wallet" ? "checked" : ""}
+        onchange="selectPay('wallet')" ${canCover ? "" : "disabled"}>
+      <span>
+        <span class="method-name">💰 Pay from wallet — ${bal} available</span><br>
+        <span class="method-type">${canCover ? "Instant — no payment needed" : "Not enough balance — add funds first"}</span>
+      </span>
+    </label>`;
   }
-  listEl.innerHTML = methods.map(m => `
-    <label class="method-option ${String(m.id) === String(selectedMethodId) ? "selected" : ""}">
-      <input type="radio" name="payMethod" value="${esc(m.id)}"
-        ${String(m.id) === String(selectedMethodId) ? "checked" : ""}
-        onchange="selectMethod('${esc(m.id)}')">
+  if (!methods.length) {
+    html += '<p class="empty">No payment methods available right now. Please try again later.</p>';
+  } else {
+    html += methods.map(m => `
+    <label class="method-option ${selectedPay && selectedPay.type === "method" && String(m.id) === String(selectedMethodId) ? "selected" : ""}">
+      <input type="radio" name="payOption" value="${esc(m.id)}"
+        ${selectedPay && selectedPay.type === "method" && String(m.id) === String(selectedMethodId) ? "checked" : ""}
+        onchange="selectPay('method','${esc(m.id)}')">
       <span>
         <span class="method-name">${esc(m.name)}</span><br>
         <span class="method-type">${esc(m.paymentType || "")}${m.verificationMode === "manual" ? " • manual approval" : " • automatic"}</span>
       </span>
     </label>`).join("");
+  }
+  listEl.innerHTML = html;
 }
-
-function selectMethod(id) {
-  selectedMethodId = id;
+function selectPay(type, id) {
+  if (type === "wallet") {
+    if (!walletCanCover()) return;
+    selectedPay = { type: "wallet" };
+    selectedMethodId = null;
+  } else {
+    selectedPay = { type: "method" };
+    selectedMethodId = id;
+  }
   renderMethods();
   updateCheckoutTotals();
 }
+function selectMethod(id) { selectPay("method", id); }
 
-/* ---- Create the order: POST /web/orders ---- */
 function validEmail(v) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || "").trim());
 }
-
 async function createOrder() {
   const errEl = document.getElementById("checkoutError");
   errEl.classList.add("hidden");
@@ -912,12 +1600,13 @@ async function createOrder() {
   emailErr.classList.add("hidden");
 
   const hasTerms = Boolean((checkoutProduct.termsAndConditions || "").trim());
-  const agreed = hasTerms ? document.getElementById("termsCheck").checked : false;
+  const agreed = hasTerms ? (document.getElementById("termsCheck").checked || checkoutAgreed) : false;
   if (hasTerms && !agreed) { termsErr.classList.remove("hidden"); return; }
   termsErr.classList.add("hidden");
 
-  if (!selectedMethodId) {
-    errEl.textContent = "Please choose a payment method.";
+  const useWallet = selectedPay && selectedPay.type === "wallet";
+  if (!useWallet && !selectedMethodId) {
+    errEl.textContent = "Please choose how to pay — wallet or a payment method.";
     errEl.classList.remove("hidden");
     return;
   }
@@ -926,16 +1615,20 @@ async function createOrder() {
   btn.disabled = true;
   btn.textContent = "Creating order…";
 
+  const body = {
+    productId: checkoutProduct.id,
+    quantity: checkoutQty,
+    email: email,
+    agreedTerms: agreed
+  };
+  if (useWallet) body.useWallet = true;
+  else body.methodId = selectedMethodId;
+
   const r = await apiFetch("/web/orders", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      productId: checkoutProduct.id,
-      quantity: checkoutQty,
-      methodId: selectedMethodId,
-      email: email,
-      agreedTerms: agreed
-    })
+    body: JSON.stringify(body),
+    auth: true
   });
 
   btn.disabled = false;
@@ -950,7 +1643,12 @@ async function createOrder() {
   }
 
   currentOrder = r.data.order;
-  showPayScreen();
+  if (currentOrder.status === "approved") {
+    refreshBalance();
+    showDelivered(currentOrder);
+  } else {
+    showPayScreen();
+  }
 }
 
 /* ============================================================
@@ -972,7 +1670,6 @@ function showPayScreen() {
   document.getElementById("paidBtn").textContent = "✅ I Made Payment";
   setStatusLine("Waiting for your payment…");
 
-  // Payment details + copy rows from the order.
   const pd = o.payDetails || {};
   document.getElementById("payDetails").textContent = pd.details || "";
   document.getElementById("payDetails").classList.toggle("hidden", !pd.details);
@@ -982,7 +1679,6 @@ function showPayScreen() {
       <button type="button" class="btn btn-ghost btn-small" data-value="${esc(f.value)}" onclick="copyFieldValue(this)">Copy</button>
     </div>`).join("");
 
-  // 10-minute countdown for auto methods only (from expiresAt).
   const cdEl = document.getElementById("countdown");
   if (o.verificationMode !== "manual" && o.expiresAt) {
     cdEl.classList.remove("hidden");
@@ -995,11 +1691,9 @@ function showPayScreen() {
   showView("view-pay");
   startPolling();
 }
-
 function setStatusLine(html) {
   document.getElementById("payStatusLine").innerHTML = html;
 }
-
 function startCountdown(expiresMs) {
   if (countdownTimer) clearInterval(countdownTimer);
   const el = document.getElementById("countdown");
@@ -1013,18 +1707,14 @@ function startCountdown(expiresMs) {
   tick();
   countdownTimer = setInterval(tick, 1000);
 }
-
 function startPolling() {
   if (pollTimer) clearInterval(pollTimer);
   pollTimer = setInterval(pollOrder, 15000);
 }
-
 async function pollOrder() {
   if (!currentOrder) return;
   const r = await apiFetch("/web/orders/" + encodeURIComponent(currentOrder.orderId));
   if (!r.ok || !r.data || r.data.ok !== true || !r.data.order) {
-    // A failed poll is not fatal — keep waiting and retry on the next tick.
-    // Only surface it if the order itself is gone.
     if (r.data && r.data.error === "order_not_found") {
       stopTimers();
       showFailed("Order not found", "That order was not found. Please start a new order.");
@@ -1034,7 +1724,6 @@ async function pollOrder() {
   currentOrder = r.data.order;
   handleOrderStatus(currentOrder);
 }
-
 function handleOrderStatus(o) {
   if (o.status === "approved") {
     stopTimers();
@@ -1049,12 +1738,9 @@ function handleOrderStatus(o) {
     setStatusLine("<b>Proof received.</b> The admin is reviewing it — your product will appear here once approved.");
     document.getElementById("proofNote").classList.remove("hidden");
   } else {
-    // pending_payment — keep waiting.
     setStatusLine("Waiting for your payment… We check automatically every few seconds.");
   }
 }
-
-/* ---- "I Made Payment": POST /web/orders/:id/paid ---- */
 async function markPaid() {
   const btn = document.getElementById("paidBtn");
   btn.disabled = true;
@@ -1082,11 +1768,8 @@ async function markPaid() {
   if (r.data && r.data.verified === false) {
     setStatusLine("Payment not found yet — keep waiting, we will keep checking automatically.");
   }
-  // If verified, the next poll (or this status) will show the delivery.
   pollOrder();
 }
-
-/* ---- Proof upload: POST /web/orders/:id/proof ---- */
 function uploadProof(input) {
   const file = input.files && input.files[0];
   if (!file) return;
@@ -1121,10 +1804,6 @@ function uploadProof(input) {
   };
   reader.readAsDataURL(file);
 }
-
-/* ============================================================
-   Delivered + failed screens
-   ============================================================ */
 function showDelivered(o) {
   document.getElementById("deliveredSub").textContent =
     `${o.productName} × ${o.quantity} — thank you for your order!`;
@@ -1148,7 +1827,6 @@ function showDelivered(o) {
     o.email ? `A copy was also emailed to ${o.email}.` : "";
   showView("view-delivered");
 }
-
 function downloadCredentials() {
   const o = currentOrder;
   if (!o || !(o.credentials || []).length) return;
@@ -1163,7 +1841,6 @@ function downloadCredentials() {
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
-
 function showFailed(title, text) {
   document.getElementById("failedTitle").textContent = title;
   document.getElementById("failedText").textContent = text;
@@ -1173,9 +1850,580 @@ function showFailed(title, text) {
 }
 
 /* ============================================================
+   Add Funds  (#/funds)
+   ============================================================ */
+function showFunds() {
+  stopTimers();
+  currentTopup = null;
+  document.getElementById("fundsBalance").textContent = fmtUsd(user ? user.walletUsdt : 0);
+  document.getElementById("fundsEmail").textContent = user ? user.email : "";
+  const fundsErrEl = document.getElementById("fundsError");
+  fundsErrEl.className = "notice error";
+  fundsErrEl.classList.add("hidden");
+  document.getElementById("topupAmount").value = "";
+  topupMethodId = null;
+  topupAmount = 0;
+  updateTopupEstimated();
+  showView("view-funds");
+  loadTopupMethods();
+}
+function updateTopupEstimated() {
+  const m = (methods || []).find(x => String(x.id) === String(topupMethodId)) || null;
+  const amt = Number(document.getElementById("topupAmount").value || 0);
+  topupAmount = amt;
+  const el = document.getElementById("topupEstimated");
+  if (!amt || amt <= 0) { el.textContent = "—"; return; }
+  if (!m) { el.textContent = fmtUsd(amt) + " (pick a method)"; return; }
+  // The exact verification amount comes from the server; the method currency
+  // decides the display: PKR/INR methods show the local amount, crypto shows USD.
+  const cur = methodCurrency(m);
+  if (cur === "usdt") el.textContent = fmtUsd(amt);
+  else el.textContent = fmtPrice(amt, cur) + " (approx. — exact amount on next step)";
+}
+async function loadTopupMethods() {
+  const listEl = document.getElementById("topupMethodList");
+  const errEl = document.getElementById("topupMethodsError");
+  const loadEl = document.getElementById("topupMethodsLoading");
+  errEl.classList.add("hidden");
+  if (methods) { renderTopupMethods(); return; }
+  listEl.innerHTML = "";
+  loadEl.classList.remove("hidden");
+  const r = await apiFetch("/web/methods");
+  loadEl.classList.add("hidden");
+  if (!r.ok || !r.data || r.data.ok !== true || !Array.isArray(r.data.methods)) {
+    errEl.classList.remove("hidden");
+    errEl.innerHTML = esc(r.networkError
+      ? "Could not load payment methods. Please check your connection."
+      : friendlyError(r.data)) +
+      ' <button type="button" class="btn btn-small" style="margin-left:8px;" onclick="loadTopupMethods()">Retry</button>';
+    return;
+  }
+  methods = r.data.methods;
+  renderTopupMethods();
+}
+function renderTopupMethods() {
+  const listEl = document.getElementById("topupMethodList");
+  if (!listEl || !methods) return;
+  listEl.innerHTML = methods.length ? methods.map(m => `
+    <label class="method-option ${String(m.id) === String(topupMethodId) ? "selected" : ""}">
+      <input type="radio" name="topupMethod" value="${esc(m.id)}"
+        ${String(m.id) === String(topupMethodId) ? "checked" : ""}
+        onchange="selectTopupMethod('${esc(m.id)}')">
+      <span>
+        <span class="method-name">${esc(m.name)}</span><br>
+        <span class="method-type">${esc(m.paymentType || "")}${m.verificationMode === "manual" ? " • manual approval" : " • automatic"}</span>
+      </span>
+    </label>`).join("")
+    : '<p class="empty">No payment methods available right now. Please try again later.</p>';
+}
+function selectTopupMethod(id) {
+  topupMethodId = id;
+  renderTopupMethods();
+  updateTopupEstimated();
+}
+async function createTopup() {
+  const errEl = document.getElementById("fundsError");
+  errEl.className = "notice error";
+  errEl.classList.add("hidden");
+  const amt = Number(document.getElementById("topupAmount").value || 0);
+  if (!amt || amt <= 0 || amt > 100000) {
+    errEl.textContent = "Please enter an amount greater than 0.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (!topupMethodId) {
+    errEl.textContent = "Please choose a payment method.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  const m = (methods || []).find(x => String(x.id) === String(topupMethodId));
+  if (!m) {
+    errEl.textContent = "That payment method is not available. Please pick another one.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  const btn = document.getElementById("createTopupBtn");
+  btn.disabled = true;
+  btn.textContent = "Creating top-up…";
+
+  const r = await apiFetch("/web/topup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      methodId: topupMethodId,
+      amountUsdt: amt,
+      currency: methodCurrency(m)
+    }),
+    auth: true
+  });
+
+  btn.disabled = false;
+  btn.textContent = "Continue to Payment";
+
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.topupId) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  currentTopup = {
+    topupId: r.data.topupId,
+    method: r.data.method,
+    paymentDetails: r.data.paymentDetails,
+    verificationAmount: r.data.verificationAmount,
+    currency: r.data.currency || methodCurrency(m),
+    expiresAt: r.data.expiresAt,
+    status: "pending_payment",
+    amountUsdt: amt
+  };
+  showTopupPayScreen();
+}
+
+/* ---- Top-up pay screen (poll GET /web/topup/:id every 15s) ---- */
+function topupMethodName(t) {
+  if (!t) return "";
+  if (typeof t.method === "string") return t.method;
+  if (t.method && t.method.name) return t.method.name;
+  return "";
+}
+function showTopupPayScreen() {
+  const t = currentTopup;
+  const methodName = topupMethodName(t);
+  document.getElementById("topupPayTitle").textContent = "Complete your top-up";
+  document.getElementById("topupPaySubtitle").textContent =
+    `Adding ${fmtUsd(t.amountUsdt)} to your wallet` + (methodName ? ` • ${methodName}` : "");
+  document.getElementById("topupPayTotal").textContent = fmtPrice(t.verificationAmount, t.currency);
+  document.getElementById("topupPayMethodLine").textContent =
+    methodName ? `Pay with ${methodName}` : "";
+  document.getElementById("topupPayId").textContent = "Top-up ID: " + t.topupId;
+  document.getElementById("topupPayError").classList.add("hidden");
+  document.getElementById("topupProofNote").classList.add("hidden");
+  document.getElementById("topupProofInput").value = "";
+  document.getElementById("topupPaidBtn").disabled = false;
+  document.getElementById("topupPaidBtn").textContent = "✅ I Made Payment";
+  setTopupStatusLine("Waiting for your payment…");
+
+  const pd = t.paymentDetails || {};
+  document.getElementById("topupPayDetails").textContent = pd.details || "";
+  document.getElementById("topupPayDetails").classList.toggle("hidden", !pd.details);
+  document.getElementById("topupPayCopyFields").innerHTML = (pd.copyFields || []).map(f => `
+    <div class="copy-row">
+      <span><span class="copy-label">${esc(f.label)}</span><br><span class="copy-value">${esc(f.value)}</span></span>
+      <button type="button" class="btn btn-ghost btn-small" data-value="${esc(f.value)}" onclick="copyFieldValue(this)">Copy</button>
+    </div>`).join("");
+
+  const cdEl = document.getElementById("topupCountdown");
+  if (t.expiresAt) {
+    cdEl.classList.remove("hidden");
+    startTopupCountdown(new Date(t.expiresAt).getTime());
+  } else {
+    cdEl.classList.add("hidden");
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
+
+  showView("view-funds-pay");
+  startTopupPolling();
+}
+function setTopupStatusLine(html) {
+  document.getElementById("topupStatusLine").innerHTML = html;
+}
+function startTopupCountdown(expiresMs) {
+  if (countdownTimer) clearInterval(countdownTimer);
+  const el = document.getElementById("topupCountdown");
+  function tick() {
+    const left = Math.max(0, expiresMs - Date.now());
+    const m = Math.floor(left / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    el.textContent = `⏳ Payment window: ${m}:${String(s).padStart(2, "0")} left`;
+    if (left <= 0) clearInterval(countdownTimer);
+  }
+  tick();
+  countdownTimer = setInterval(tick, 1000);
+}
+function startTopupPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(pollTopup, 15000);
+}
+async function pollTopup() {
+  if (!currentTopup) return;
+  const r = await apiFetch("/web/topup/" + encodeURIComponent(currentTopup.topupId), { auth: true });
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.topup) {
+    if (r.data && r.data.error === "topup_not_found") {
+      stopTimers();
+      showFailed("Top-up not found", "That top-up was not found. Please start a new one.");
+    }
+    return;
+  }
+  const t = r.data.topup;
+  currentTopup = Object.assign({}, currentTopup, t);
+  handleTopupStatus(currentTopup);
+}
+async function handleTopupStatus(t) {
+  if (t.status === "approved") {
+    stopTimers();
+    await refreshBalance();
+    showView("view-funds");
+    document.getElementById("fundsBalance").textContent = fmtUsd(user ? user.walletUsdt : 0);
+    const errEl = document.getElementById("fundsError");
+    errEl.textContent = `✅ ${fmtUsd(t.amountUsdt || 0)} added to your wallet. New balance: ${fmtUsd(user ? user.walletUsdt : 0)}.`;
+    errEl.className = "notice success";
+    errEl.classList.remove("hidden");
+    showFundsKeepNotice();
+  } else if (t.status === "rejected") {
+    stopTimers();
+    showFailed("Top-up rejected", "Rejected by admin — contact support and they will help you.");
+  } else if (t.status === "expired") {
+    stopTimers();
+    showFailed("Payment window expired", "Payment window expired — start a new top-up.");
+  } else if (t.status === "pending_review") {
+    setTopupStatusLine("<b>Proof received.</b> The admin is reviewing it — your wallet will be credited once approved.");
+    document.getElementById("topupProofNote").classList.remove("hidden");
+  } else {
+    setTopupStatusLine("Waiting for your payment… We check automatically every few seconds.");
+  }
+}
+function showFundsKeepNotice() {
+  // Keep the success notice visible on the funds page after approval.
+  showView("view-funds");
+}
+async function markTopupPaid() {
+  const btn = document.getElementById("topupPaidBtn");
+  btn.disabled = true;
+  btn.textContent = "Checking…";
+  setTopupStatusLine("Checking your payment… please keep this page open.");
+  const r = await apiFetch("/web/topup/" + encodeURIComponent(currentTopup.topupId) + "/paid", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({}),
+    auth: true
+  });
+  btn.disabled = false;
+  btn.textContent = "✅ I Made Payment";
+  if (!r.ok) {
+    const errEl = document.getElementById("topupPayError");
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (r.data && r.data.status) {
+    currentTopup.status = r.data.status;
+    handleTopupStatus(currentTopup);
+  }
+  pollTopup();
+}
+function uploadTopupProof(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    const errEl = document.getElementById("topupPayError");
+    errEl.textContent = "Please choose an image file (screenshot of your payment).";
+    errEl.classList.remove("hidden");
+    input.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const errEl = document.getElementById("topupPayError");
+    errEl.classList.add("hidden");
+    setTopupStatusLine("Sending your screenshot…");
+    // Contract: {imageBase64} — raw base64 without the data: prefix.
+    const rawBase64 = String(reader.result || "").split(",")[1] || "";
+    const r = await apiFetch("/web/topup/" + encodeURIComponent(currentTopup.topupId) + "/proof", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageBase64: rawBase64 }),
+      auth: true
+    });
+    if (!r.ok || !r.data || r.data.ok !== true) {
+      errEl.textContent = r.networkError
+        ? "Could not reach the store. Please check your connection and try again."
+        : friendlyError(r.data);
+      errEl.classList.remove("hidden");
+      setTopupStatusLine("Waiting for your payment…");
+      return;
+    }
+    document.getElementById("topupProofNote").classList.remove("hidden");
+    setTopupStatusLine("<b>Proof sent — the admin will review it, your wallet will be credited once approved.</b>");
+    pollTopup();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ============================================================
+   My Orders  (GET /v1/web/orders)
+   ============================================================ */
+function statusBadge(status) {
+  const s = String(status || "").toLowerCase();
+  if (s === "approved") return '<span class="status-badge status-approved">Approved</span>';
+  if (s === "rejected" || s === "expired") return '<span class="status-badge status-failed">' + esc(status) + '</span>';
+  return '<span class="status-badge status-pending">' + esc(status || "Pending") + '</span>';
+}
+function fmtDate(d) {
+  try { return new Date(d).toLocaleString(); } catch (e) { return String(d || ""); }
+}
+async function showOrders() {
+  stopTimers();
+  showView("view-orders");
+  const listEl = document.getElementById("ordersList");
+  const errEl = document.getElementById("ordersError");
+  const loadEl = document.getElementById("ordersLoading");
+  const emptyEl = document.getElementById("ordersEmpty");
+  errEl.classList.add("hidden");
+  emptyEl.classList.add("hidden");
+  listEl.innerHTML = "";
+  loadEl.classList.remove("hidden");
+  const r = await apiFetch("/web/orders", { auth: true });
+  loadEl.classList.add("hidden");
+  if (r.status === 401) { clearSession(); goRoute("#/signin"); return; }
+  if (!r.ok || !r.data || r.data.ok !== true || !Array.isArray(r.data.orders)) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  const orders = r.data.orders;
+  if (!orders.length) { emptyEl.classList.remove("hidden"); return; }
+  listEl.innerHTML = orders.map(o => {
+    const total = (o.totalLocal != null && o.currency)
+      ? fmtPrice(o.totalLocal, String(o.currency).toLowerCase())
+      : fmtUsd(o.totalUsdt != null ? o.totalUsdt : o.total);
+    const creds = o.credentials || [];
+    const approved = String(o.status || "").toLowerCase() === "approved";
+    return `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-name">${esc(o.productName || "Order")}${o.quantity ? " × " + Number(o.quantity) : ""}</div>
+          <div class="order-meta">Order ${esc(o.orderId || "")} • ${esc(fmtDate(o.createdAt))}</div>
+        </div>
+        <div>
+          <div class="order-total">${total}</div>
+          <div style="text-align:right;margin-top:4px;">${statusBadge(o.status)}</div>
+        </div>
+      </div>
+      ${approved && o.instructions ? `<div class="notice info" style="margin-top:12px;">${esc(o.instructions)}</div>` : ""}
+      ${approved && creds.length ? creds.map(c => `
+        <div class="cred-box" style="margin-top:10px;">
+          <div class="cred-text">${esc(c)}</div>
+          <button type="button" class="btn btn-ghost btn-small" onclick="copyText(${JSON.stringify(String(c))}, this)">Copy</button>
+        </div>`).join("") : ""}
+      ${approved && !creds.length ? '<p class="empty" style="padding:10px 0;">Credentials will appear here shortly.</p>' : ""}
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   Transactions  (GET /v1/web/transactions)
+   ============================================================ */
+async function showTransactions() {
+  stopTimers();
+  showView("view-transactions");
+  const listEl = document.getElementById("txnsList");
+  const errEl = document.getElementById("txnsError");
+  const loadEl = document.getElementById("txnsLoading");
+  const emptyEl = document.getElementById("txnsEmpty");
+  errEl.classList.add("hidden");
+  emptyEl.classList.add("hidden");
+  listEl.innerHTML = "";
+  loadEl.classList.remove("hidden");
+  const r = await apiFetch("/web/transactions", { auth: true });
+  loadEl.classList.add("hidden");
+  if (r.status === 401) { clearSession(); goRoute("#/signin"); return; }
+  if (!r.ok || !r.data || r.data.ok !== true || !Array.isArray(r.data.transactions)) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  const txns = r.data.transactions;
+  if (!txns.length) { emptyEl.classList.remove("hidden"); return; }
+  listEl.innerHTML = txns.map(t => {
+    const isTopup = String(t.kind || "").toLowerCase() === "topup";
+    const label = isTopup
+      ? "Top-up" + (t.method ? " via " + t.method : "")
+      : "Purchase" + (t.product ? " — " + t.product : "");
+    const sign = isTopup ? "+" : "−";
+    return `
+    <div class="txn-row">
+      <div class="txn-icon ${isTopup ? "topup" : "spend"}">${isTopup ? "＋" : "−"}</div>
+      <div class="txn-info">
+        <div class="txn-label">${esc(label)}</div>
+        <div class="txn-sub">${esc(t.refId || "")} • ${esc(fmtDate(t.createdAt))}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="txn-amount ${isTopup ? "pos" : "neg"}">${sign}${fmtUsd(t.amountUsdt)}</div>
+        <div style="margin-top:2px;">${statusBadge(t.status)}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+/* ============================================================
+   Auth: sign in / sign up / Google / log out
+   ============================================================ */
+function maybeShowGoogle(which) {
+  const wrap = document.getElementById(which === "signin" ? "signinGoogleWrap" : "signupGoogleWrap");
+  if (!wrap) return;
+  const show = googleEnabled();
+  wrap.classList.toggle("hidden", !show);
+  if (show) setupGoogleButton(which);
+}
+function setupGoogleButton(which) {
+  const btn = document.getElementById(which === "signin" ? "googleSigninBtn" : "googleSignupBtn");
+  if (!btn || btn.dataset.bound) return;
+  btn.dataset.bound = "1";
+  btn.addEventListener("click", startGoogleSignin);
+}
+function loadGoogleScript() {
+  return new Promise((resolve, reject) => {
+    if (googleScriptLoaded) return resolve();
+    if (window.google && window.google.accounts) { googleScriptLoaded = true; return resolve(); }
+    const s = document.createElement("script");
+    s.src = "https://accounts.google.com/gsi/client";
+    s.async = true;
+    s.defer = true;
+    s.onload = () => { googleScriptLoaded = true; resolve(); };
+    s.onerror = () => reject(new Error("google_script_failed"));
+    document.head.appendChild(s);
+  });
+}
+async function startGoogleSignin() {
+  const errEl = document.getElementById("signinError");
+  const errEl2 = document.getElementById("signupError");
+  [errEl, errEl2].forEach(e => { if (e) e.classList.add("hidden"); });
+  if (!googleEnabled()) {
+    const e = errEl.classList.contains("hidden") ? errEl2 : errEl;
+    if (e) { e.textContent = "Google sign-in is not available right now. Please use email instead."; e.classList.remove("hidden"); }
+    return;
+  }
+  try {
+    await loadGoogleScript();
+    window.google.accounts.id.initialize({
+      client_id: siteConfig.googleClientId,
+      callback: handleGoogleCredential,
+      auto_select: false
+    });
+    window.google.accounts.id.prompt();
+  } catch (e) {
+    const shown = document.querySelector("main:not(.hidden) .notice.error");
+    if (shown) { shown.textContent = "Google sign-in could not start. Please check your connection or use email instead."; shown.classList.remove("hidden"); }
+  }
+}
+async function handleGoogleCredential(response) {
+  const idToken = response && response.credential;
+  if (!idToken) return;
+  const r = await apiFetch("/web/auth/google", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ idToken })
+  });
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.token) {
+    const e = document.getElementById("signinError");
+    if (e) {
+      e.textContent = r.networkError
+        ? "Could not reach the store. Please check your connection and try again."
+        : friendlyError(r.data);
+      e.classList.remove("hidden");
+    }
+    return;
+  }
+  saveSession(r.data.token, r.data.user);
+  goRoute(redirectAfterLogin || "#/");
+  redirectAfterLogin = "#/";
+}
+async function doSignin() {
+  const errEl = document.getElementById("signinError");
+  errEl.classList.add("hidden");
+  const email = document.getElementById("signinEmail").value.trim();
+  const password = document.getElementById("signinPassword").value;
+  if (!validEmail(email)) { errEl.textContent = "Please enter a valid email address."; errEl.classList.remove("hidden"); return; }
+  if (!password) { errEl.textContent = "Please enter your password."; errEl.classList.remove("hidden"); return; }
+  const btn = document.getElementById("signinBtn");
+  btn.disabled = true;
+  btn.textContent = "Signing in…";
+  const r = await apiFetch("/web/auth/signin", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+  btn.disabled = false;
+  btn.textContent = "Sign in";
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.token) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  saveSession(r.data.token, r.data.user);
+  goRoute(redirectAfterLogin || "#/");
+  redirectAfterLogin = "#/";
+}
+async function doSignup() {
+  const errEl = document.getElementById("signupError");
+  errEl.classList.add("hidden");
+  const email = document.getElementById("signupEmail").value.trim();
+  const whatsapp = document.getElementById("signupWhatsapp").value.trim();
+  const password = document.getElementById("signupPassword").value;
+  if (!validEmail(email)) { errEl.textContent = "Please enter a valid email address."; errEl.classList.remove("hidden"); return; }
+  if (!whatsapp) { errEl.textContent = "Please enter your WhatsApp number."; errEl.classList.remove("hidden"); return; }
+  if (!password || password.length < 6) { errEl.textContent = "Password must be at least 6 characters."; errEl.classList.remove("hidden"); return; }
+  const btn = document.getElementById("signupBtn");
+  btn.disabled = true;
+  btn.textContent = "Creating account…";
+  const r = await apiFetch("/web/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, whatsapp })
+  });
+  btn.disabled = false;
+  btn.textContent = "Create account";
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.token) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  saveSession(r.data.token, r.data.user);
+  goRoute(redirectAfterLogin || "#/");
+  redirectAfterLogin = "#/";
+}
+function doLogout() {
+  clearSession();
+  goRoute("#/");
+}
+function showMenu() {
+  const loggedIn = isLoggedIn();
+  document.getElementById("menuLoggedOut").classList.toggle("hidden", loggedIn);
+  document.getElementById("menuLoggedIn").classList.toggle("hidden", !loggedIn);
+  document.getElementById("logoutRow").classList.toggle("hidden", !loggedIn);
+  if (loggedIn) {
+    document.getElementById("menuBalance").textContent = fmtUsd(user.walletUsdt);
+    document.getElementById("menuEmail").textContent = user.email || "";
+  }
+  showView("view-menu");
+}
+
+/* ============================================================
    Start
    ============================================================ */
-document.addEventListener("DOMContentLoaded", loadProducts);
+document.addEventListener("DOMContentLoaded", async () => {
+  renderCurrencyToggle();
+  updateHeader();
+  await loadConfig();
+  if (token) await loadMe();
+  window.addEventListener("hashchange", route);
+  // Top-up amount input updates the estimate live.
+  const topupInput = document.getElementById("topupAmount");
+  if (topupInput) topupInput.addEventListener("input", updateTopupEstimated);
+  route();
+});
 </script>
 </body>
 </html>
