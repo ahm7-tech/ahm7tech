@@ -116,6 +116,19 @@ section.block h2 { font-size: 24px; font-weight: 800; }
 /* v17.112: payment method photo on the pay screens — same fixed-height,
    auto-cropped alignment as the product photo. */
 .method-img { width: 100%; height: 220px; object-fit: cover; object-position: center; border-radius: var(--radius); display: block; margin-bottom: 14px; background: var(--bg-soft); }
+
+/* v17.115: shopping cart */
+.cart-btn { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 12px; width: 40px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cart-count { position: absolute; top: -6px; right: -6px; background: var(--indigo); color: #fff; font-size: 11px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+.cart-row { display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-bottom: 10px; background: #fff; }
+.cart-info { flex: 1; min-width: 0; }
+.cart-price { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.cart-controls { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.cart-line-total { font-weight: 800; font-size: 16px; }
+.pay-items { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; background: var(--bg-soft); }
+.pay-item { display: flex; justify-content: space-between; gap: 10px; font-size: 14px; padding: 4px 0; }
+.pay-item span:last-child { font-weight: 700; white-space: nowrap; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 84px; z-index: 80; background: var(--ink); color: #fff; font-size: 14px; font-weight: 700; padding: 10px 16px; border-radius: 999px; box-shadow: 0 6px 20px rgba(15,23,42,.25); }
 /* v17.109: home-page contact buttons. */
 .contact-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
 .contact-row .btn { flex: 1; min-width: 200px; text-align: center; }
@@ -484,6 +497,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
     <div class="logo" onclick="goRoute('#/')">AHM7 <span>STORE</span></div>
     <div class="header-spacer"></div>
     <button type="button" class="wallet-chip hidden" id="walletChip" onclick="goRoute('#/funds')">💰 <span id="walletChipAmount">$0.00</span></button>
+    <button type="button" class="cart-btn" id="cartBtn" onclick="goRoute('#/cart')" aria-label="Cart">🛒<span class="cart-count hidden" id="cartCount">0</span></button>
     <div class="currency-toggle" role="group" aria-label="Currency" id="currencyToggle"></div>
     <button type="button" class="btn btn-small hidden" id="loginBtn" onclick="goRoute('#/signin')">Login</button>
     <button type="button" class="btn btn-small btn-ghost hidden" id="menuBtn" onclick="goRoute('#/menu')">☰ Menu</button>
@@ -571,6 +585,57 @@ footer .btn { display: inline-block; margin-top: 12px; }
   </div>
 </main>
 
+<!-- ===================== CART VIEW ===================== -->
+<main id="view-cart" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <button type="button" class="back-link" onclick="goRoute('#/')">← Continue shopping</button>
+      <h2>🛒 Your Cart</h2>
+      <p class="sub">Review your items — stock and prices are checked again before you pay.</p>
+
+      <div id="cartLoading" class="loading hidden">Checking stock and prices…</div>
+      <div id="cartNotice" class="notice info hidden"></div>
+      <div id="cartError" class="notice error hidden"></div>
+      <div id="cartEmpty" class="empty hidden">Your cart is empty. <a href="#/">Browse products</a> to add something.</div>
+      <div id="cartItems"></div>
+
+      <div id="cartFooter" class="hidden">
+        <div class="total-row">
+          <span class="t-label">Cart total</span>
+          <span class="t-value" id="cartTotal">—</span>
+        </div>
+        <button type="button" class="btn btn-block" onclick="document.getElementById('cartCheckoutBlock').scrollIntoView({behavior:'smooth'})">Proceed to Checkout →</button>
+      </div>
+
+      <div id="cartCheckoutBlock" class="hidden" style="margin-top:18px;">
+        <div class="field hidden" id="cartTermsField">
+          <label>Product terms &amp; conditions</label>
+          <div id="cartTermsBoxes"></div>
+          <label class="terms-check"><input type="checkbox" id="cartTermsCheck"> I agree to the terms &amp; conditions above</label>
+          <div class="error hidden" id="cartTermsError">Please tick the box to agree to the product terms.</div>
+        </div>
+
+        <div class="field">
+          <label>How do you want to pay?</label>
+          <div id="cartMethodsLoading" class="loading hidden" style="padding:16px 0;">Loading payment methods…</div>
+          <div id="cartMethodsError" class="notice error hidden"></div>
+          <div class="method-list" id="cartMethodList"></div>
+        </div>
+
+        <div class="field">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:700;">Estimated total</span>
+            <span style="font-size:20px;font-weight:800;" id="cartEstimatedTotal">—</span>
+          </div>
+          <div class="hint">The exact total is confirmed on the next step — please pay exactly that amount.</div>
+        </div>
+
+        <button type="button" class="btn btn-block" id="cartConfirmBtn" onclick="createCartOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </div>
+</main>
+
 <!-- ===================== CHECKOUT VIEW ===================== -->
 <main id="view-checkout" class="view hidden">
   <div class="container">
@@ -590,13 +655,6 @@ footer .btn { display: inline-block; margin-top: 12px; }
           <span id="qtyStockHint" class="hint"></span>
         </div>
         <div class="tier-hint" id="tierHint"></div>
-      </div>
-
-      <div class="field">
-        <label for="emailInput">Your email</label>
-        <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email">
-        <div class="hint">Your product will be delivered on this page and also emailed to you.</div>
-        <div class="error hidden" id="emailError">Please enter a valid email address.</div>
       </div>
 
       <div class="field hidden" id="termsField">
@@ -632,6 +690,9 @@ footer .btn { display: inline-block; margin-top: 12px; }
     <div class="panel">
       <h2 id="payTitle">Complete your payment</h2>
       <p class="sub" id="paySubtitle"></p>
+
+      <div id="payItems" class="pay-items hidden"></div>
+      <div id="payRemovedNotice" class="notice warn hidden"></div>
 
       <div id="payError" class="notice error hidden"></div>
 
@@ -1093,6 +1154,8 @@ footer .btn { display: inline-block; margin-top: 12px; }
   </div>
 </main>
 
+<div id="toast" class="toast hidden"></div>
+
 <!-- ===================== Bottom navigation ===================== -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
@@ -1109,7 +1172,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
 <script>
 /* ============================================================
-   AHM7 STORE v17.109 — full web store (wallet-first) + website admin
+   AHM7 STORE v17.115 — full web store (wallet-first) + website admin + cart
    Products live from the bot API (same MongoDB as Telegram).
    Auth: JWT in localStorage ("ahm7_token").
    Admin: separate JWT in localStorage ("ahm7_admin_token"), routes #/admin*.
@@ -1149,6 +1212,12 @@ let topupMethodId = null;
 let topupAmount = 0;
 let topupCurrency = "usd"; // "usd" | "pkr" | "inr" — Add Funds amount currency (v17.106)
 let googleScriptLoaded = false;
+
+// ---- Shopping cart (v17.115) — localStorage "ahm7_cart" ----
+let cart = loadCart();
+let cartSelectedPay = null;   // {type:"wallet"} | {type:"method", id}
+let cartSelectedMethodId = null;
+let cartRemoved = [];         // items the backend dropped at checkout (shown on pay screen)
 
 // ---- Website admin state (v17.106) — separate from the shopper session ----
 let adminToken = localStorage.getItem("ahm7_admin_token") || "";
@@ -1526,6 +1595,10 @@ async function route() {
     startCheckoutByKeyword(arg);
     return;
   }
+  if (page === "cart") {
+    showCart();
+    return;
+  }
   if (page === "funds") {
     if (!isLoggedIn()) { redirectAfterLogin = "#/funds"; goRoute("#/signin"); return; }
     showFunds();
@@ -1628,6 +1701,8 @@ function productCardHtml(p) {
       </div>
       <button type="button" class="btn btn-block" ${out ? "disabled" : ""}
         onclick="goRoute('#/detail/${esc(p.keyword || p.id)}')">${out ? "Out of stock" : "View Product"}</button>
+      <button type="button" class="btn btn-ghost btn-block" ${out ? "disabled" : ""}
+        onclick="addToCart('${esc(p.id)}', 1)">🛒 Add to Cart</button>
     </div>
   </div>`;
 }
@@ -1674,6 +1749,7 @@ function renderAllProducts() {
         ${out ? `<div class="out-tag">Out of stock</div>` : `<div><span class="stock-badge in">${isUnlimitedProduct(p) ? "♾️" : "In Stock"}</span></div>`}
       </div>
       <button type="button" class="btn" ${out ? "disabled" : ""} onclick="goRoute('#/detail/${esc(p.keyword || p.id)}')">${out ? "Out of stock" : "View"}</button>
+      <button type="button" class="btn btn-ghost btn-small" ${out ? "disabled" : ""} onclick="addToCart('${esc(p.id)}', 1)">🛒 Add</button>
     </div>`;
   }).join("");
 }
@@ -1743,6 +1819,7 @@ function renderDetail() {
       <span class="t-value" id="detailTotal">—</span>
     </div>
     <button type="button" class="btn btn-block" id="detailBuyBtn" ${out ? "disabled" : ""} onclick="buyFromDetail()">${out ? "Out of stock" : "Buy Now"}</button>
+    <button type="button" class="btn btn-ghost btn-block" id="detailAddBtn" ${out ? "disabled" : ""} onclick="addToCartFromDetail()">🛒 Add to Cart</button>
     <br>
     <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/help')">❓ Help</button>
   `;
@@ -1837,10 +1914,7 @@ function startCheckoutByKeyword(keyword) {
   selectedPay = null;
   document.getElementById("checkoutProductName").textContent = p.name;
   document.getElementById("checkoutError").classList.add("hidden");
-  document.getElementById("emailError").classList.add("hidden");
   document.getElementById("termsError").classList.add("hidden");
-  const emailInput = document.getElementById("emailInput");
-  if (isLoggedIn() && user.email) emailInput.value = user.email;
 
   updateQtyUI();
   const hasTerms = Boolean((p.termsAndConditions || "").trim());
@@ -1974,12 +2048,7 @@ function validEmail(v) {
 async function createOrder() {
   const errEl = document.getElementById("checkoutError");
   errEl.classList.add("hidden");
-  const email = document.getElementById("emailInput").value.trim();
-  const emailErr = document.getElementById("emailError");
   const termsErr = document.getElementById("termsError");
-
-  if (!validEmail(email)) { emailErr.classList.remove("hidden"); return; }
-  emailErr.classList.add("hidden");
 
   const hasTerms = Boolean((checkoutProduct.termsAndConditions || "").trim());
   const agreed = hasTerms ? (document.getElementById("termsCheck").checked || checkoutAgreed) : false;
@@ -2000,7 +2069,6 @@ async function createOrder() {
   const body = {
     productId: checkoutProduct.id,
     quantity: checkoutQty,
-    email: email,
     agreedTerms: agreed
   };
   if (useWallet) body.useWallet = true;
@@ -2025,6 +2093,7 @@ async function createOrder() {
   }
 
   currentOrder = r.data.order;
+  cartRemoved = Array.isArray(r.data.removed) ? r.data.removed : [];
   if (currentOrder.status === "approved") {
     refreshBalance();
     showDelivered(currentOrder);
@@ -2041,6 +2110,26 @@ function showPayScreen() {
   document.getElementById("payTitle").textContent = "Complete your payment";
   document.getElementById("paySubtitle").textContent =
     `${o.productName} × ${o.quantity}` + (o.freeQuantity > 0 ? `  (+ ${o.freeQuantity} free)` : "");
+  // v17.115: cart orders list their items on the pay screen (from order.items).
+  const payItemsEl = document.getElementById("payItems");
+  if (o.isCartOrder && Array.isArray(o.items) && o.items.length) {
+    document.getElementById("paySubtitle").textContent = `Cart order — ${o.items.length} item${o.items.length > 1 ? "s" : ""}`;
+    payItemsEl.innerHTML = o.items.map(it => `
+      <div class="pay-item"><span>${esc(it.productName || "Product")} × ${Number(it.quantity || 1)}${Number(it.freeQuantity || 0) > 0 ? ` (+ ${it.freeQuantity} free)` : ""}</span><span>${fmtPrice(it.totalPrice, o.currency)}</span></div>`).join("");
+    payItemsEl.classList.remove("hidden");
+  } else {
+    payItemsEl.classList.add("hidden");
+    payItemsEl.innerHTML = "";
+  }
+  // v17.115: items the backend dropped at checkout (out of stock / unavailable).
+  const payRemovedEl = document.getElementById("payRemovedNotice");
+  if (cartRemoved && cartRemoved.length) {
+    payRemovedEl.textContent = "Removed from your cart: " + cartRemoved.map(x => (x.productName || "A product") + (x.reason ? " (" + reasonLabel(x.reason) + ")" : "")).join(", ");
+    payRemovedEl.classList.remove("hidden");
+  } else {
+    payRemovedEl.classList.add("hidden");
+    payRemovedEl.textContent = "";
+  }
   document.getElementById("payTotal").textContent = fmtExactPayAmount(o.total, o.currency);
   document.getElementById("payMethodLine").textContent =
     `Pay with ${o.paymentMethod} • ${o.verificationMode === "manual" ? "manual approval" : "automatic verification"}`;
@@ -2231,9 +2320,347 @@ function uploadProof(input) {
   };
   reader.readAsDataURL(file);
 }
+/* ============================================================
+   Shopping cart  (#/cart) — v17.115
+   Kept in localStorage ("ahm7_cart") as [{productId, quantity, name, unitUsdt}].
+   Stock and prices are re-checked live every time the cart page opens and
+   again right before payment (the backend re-validates too and may drop
+   items — those come back in the order response `removed` list).
+   No email in cart checkout (v17.115): guest cart orders need no email —
+   the buyer gets the product on the pay/delivered page.
+   ============================================================ */
+function loadCart() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("ahm7_cart") || "[]");
+    if (!Array.isArray(raw)) return [];
+    return raw.filter(c => c && String(c.productId || "") && Number(c.quantity) > 0)
+      .map(c => ({ productId: String(c.productId), quantity: Math.min(100, Math.floor(Number(c.quantity) || 1)), name: String(c.name || ""), unitUsdt: (typeof c.unitUsdt === "number" ? c.unitUsdt : null) }));
+  } catch (e) { return []; }
+}
+function saveCart() {
+  try { localStorage.setItem("ahm7_cart", JSON.stringify(cart)); } catch (e) {}
+  updateCartBadge();
+}
+function clearCart() { cart = []; saveCart(); }
+function cartCount() { return cart.reduce((n, c) => n + Number(c.quantity || 0), 0); }
+function updateCartBadge() {
+  const el = document.getElementById("cartCount");
+  if (!el) return;
+  const n = cartCount();
+  el.textContent = String(n);
+  el.classList.toggle("hidden", n <= 0);
+}
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById("toast");
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.add("hidden"), 1800);
+}
+async function reloadProducts() { productsLoaded = false; return loadProducts(); }
+function reasonLabel(reason) {
+  const r = String(reason || "").toLowerCase();
+  if (r === "out_of_stock" || r === "out of stock") return "out of stock";
+  if (r === "unavailable" || r === "not_available") return "unavailable";
+  if (r === "price_changed") return "price changed";
+  return reason ? String(reason) : "";
+}
+
+async function addToCart(productId, qty) {
+  await loadProducts();
+  const p = allProducts.find(x => String(x.id) === String(productId));
+  if (!p) { showToast("That product is no longer available."); return; }
+  if (p.isBundle) { showToast("Bundles cannot be added to the cart."); return; }
+  if (!p.inStock) { showToast("That product is out of stock."); return; }
+  const max = maxQtyFor(p);
+  const q = Math.min(max, Math.max(1, Math.floor(Number(qty) || 1)));
+  const ex = cart.find(c => String(c.productId) === String(p.id));
+  if (ex) ex.quantity = Math.min(max, ex.quantity + q);
+  else cart.push({ productId: String(p.id), quantity: q, name: p.name, unitUsdt: payPrice(p, "usdt") });
+  saveCart();
+  showToast("Added to cart ✓");
+}
+function addToCartFromDetail() {
+  if (!detailProduct) return;
+  addToCart(detailProduct.id, detailQty);
+}
+function changeCartQty(productId, d) {
+  const c = cart.find(x => String(x.productId) === String(productId));
+  if (!c) return;
+  const p = allProducts.find(x => String(x.id) === String(productId));
+  const max = p ? maxQtyFor(p) : 100;
+  c.quantity = Math.min(max, Math.max(1, c.quantity + d));
+  saveCart();
+  renderCart();
+}
+function removeFromCart(productId) {
+  cart = cart.filter(c => String(c.productId) !== String(productId));
+  saveCart();
+  renderCart();
+  showToast("Removed from cart");
+}
+// Re-check live stock + prices. Drops unavailable items, clamps quantities
+// to what is left, notes price changes. Returns {dropped, changed}.
+function validateCart() {
+  const dropped = [];
+  const changed = [];
+  const kept = [];
+  for (const c of cart) {
+    const p = allProducts.find(x => String(x.id) === String(c.productId));
+    if (!p) { dropped.push({ name: c.name || "A product", reason: "no longer available" }); continue; }
+    if (!p.inStock) { dropped.push({ name: p.name, reason: "out of stock" }); continue; }
+    const max = maxQtyFor(p);
+    if (c.quantity > max) { changed.push({ name: p.name, note: "only " + max + " left" }); c.quantity = max; }
+    const now = payPrice(p, "usdt");
+    if (typeof c.unitUsdt === "number" && Math.abs(c.unitUsdt - now) > 0.000001) {
+      changed.push({ name: p.name, note: "price updated" });
+    }
+    c.unitUsdt = now;
+    kept.push(c);
+  }
+  cart = kept;
+  saveCart();
+  return { dropped, changed };
+}
+function cartResolved() {
+  return cart.map(c => ({ entry: c, product: allProducts.find(p => String(p.id) === String(c.productId)) || null }))
+    .filter(x => x.product);
+}
+function cartTermsProducts() {
+  return cartResolved().filter(x => Boolean((x.product.termsAndConditions || "").trim())).map(x => x.product);
+}
+function cartTotal(cur) {
+  return cartResolved().reduce((sum, x) => sum + estimateTotal(x.product, x.entry.quantity, cur).total, 0);
+}
+function cartCurrency() {
+  if (cartSelectedPay && cartSelectedPay.type === "wallet") return "usdt";
+  const m = (methods || []).find(x => String(x.id) === String(cartSelectedMethodId));
+  if (m) return methodCurrency(m);
+  return currency;
+}
+function cartWalletCanCover() {
+  if (!isLoggedIn()) return false;
+  const total = cartTotal("usdt");
+  return total > 0 && Number(user.walletUsdt || 0) >= total;
+}
+function renderCart(notes) {
+  const items = cartResolved();
+  const noticeEl = document.getElementById("cartNotice");
+  const parts = [];
+  if (notes) {
+    if (notes.dropped && notes.dropped.length) parts.push("Removed: " + notes.dropped.map(d => d.name + (d.reason ? " (" + d.reason + ")" : "")).join(", "));
+    if (notes.changed && notes.changed.length) parts.push("Updated: " + notes.changed.map(d => d.name + (d.note ? " (" + d.note + ")" : "")).join(", "));
+  }
+  if (parts.length) { noticeEl.textContent = parts.join("  •  "); noticeEl.classList.remove("hidden"); }
+  else noticeEl.classList.add("hidden");
+
+  document.getElementById("cartEmpty").classList.toggle("hidden", items.length > 0);
+  document.getElementById("cartFooter").classList.toggle("hidden", items.length === 0);
+  document.getElementById("cartCheckoutBlock").classList.toggle("hidden", items.length === 0);
+
+  document.getElementById("cartItems").innerHTML = items.map(({ entry, product: p }) => {
+    const max = maxQtyFor(p);
+    const line = estimateTotal(p, entry.quantity, currency);
+    return `
+    <div class="cart-row">
+      ${productImageHtml(p, "list-img") || `<div class="list-tile" style="background:${tileGradient(p.name)}">${esc(initials(p.name))}</div>`}
+      <div class="cart-info">
+        <div class="list-name">${esc(p.name)}</div>
+        <div class="cart-price">${priceHtml(p)} each</div>
+      </div>
+      <div class="cart-controls">
+        <div class="qty-row">
+          <button type="button" class="qty-btn" onclick="changeCartQty('${esc(p.id)}', -1)" ${entry.quantity <= 1 ? "disabled" : ""}>−</button>
+          <span class="qty-num">${entry.quantity}</span>
+          <button type="button" class="qty-btn" onclick="changeCartQty('${esc(p.id)}', 1)" ${entry.quantity >= max ? "disabled" : ""}>+</button>
+        </div>
+        <div class="cart-line-total">${fmtPrice(line.total, currency)}</div>
+        <button type="button" class="btn btn-ghost btn-small" onclick="removeFromCart('${esc(p.id)}')">✕ Remove</button>
+      </div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("cartTotal").textContent = fmtPrice(cartTotal(currency), currency);
+  renderCartTerms();
+  cartCheckoutTotals();
+}
+function renderCartTerms() {
+  const prods = cartTermsProducts();
+  const field = document.getElementById("cartTermsField");
+  if (!field) return;
+  field.classList.toggle("hidden", prods.length === 0);
+  if (!prods.length) return;
+  document.getElementById("cartTermsBoxes").innerHTML = prods.map(p =>
+    `<div class="terms-box"><b>${esc(p.name)}</b>\n${esc(p.termsAndConditions)}</div>`).join("");
+}
+async function ensureMethods() {
+  if (methods) return true;
+  const r = await apiFetch("/web/methods");
+  if (r.ok && r.data && r.data.ok && Array.isArray(r.data.methods)) { methods = r.data.methods; return true; }
+  return false;
+}
+function renderCartMethods() {
+  const listEl = document.getElementById("cartMethodList");
+  if (!listEl || !methods) return;
+  let html = "";
+  if (isLoggedIn()) {
+    const canCover = cartWalletCanCover();
+    const bal = fmtUsd(user.walletUsdt);
+    html += `
+    <label class="method-option wallet-option ${cartSelectedPay && cartSelectedPay.type === "wallet" ? "selected" : ""}">
+      <input type="radio" name="cartPayOption" ${cartSelectedPay && cartSelectedPay.type === "wallet" ? "checked" : ""}
+        onchange="selectCartPay('wallet')" ${canCover ? "" : "disabled"}>
+      <span>
+        <span class="method-name">💰 Pay from wallet — ${bal} available</span><br>
+        <span class="method-type">${canCover ? "Instant — no payment needed" : "Not enough balance — add funds first"}</span>
+      </span>
+    </label>`;
+  }
+  if (!methods.length) {
+    html += '<p class="empty">No payment methods available right now. Please try again later.</p>';
+  } else {
+    html += methods.map(m => `
+    <label class="method-option ${cartSelectedPay && cartSelectedPay.type === "method" && String(m.id) === String(cartSelectedMethodId) ? "selected" : ""}">
+      <input type="radio" name="cartPayOption" value="${esc(m.id)}"
+        ${cartSelectedPay && cartSelectedPay.type === "method" && String(m.id) === String(cartSelectedMethodId) ? "checked" : ""}
+        onchange="selectCartPay('method','${esc(m.id)}')">
+      <span>
+        <span class="method-name">${esc(m.name)}</span><br>
+        <span class="method-type">${esc(m.paymentType || "")}${m.verificationMode === "manual" ? " • manual approval" : " • automatic"}</span>
+      </span>
+    </label>`).join("");
+  }
+  listEl.innerHTML = html;
+}
+function selectCartPay(type, id) {
+  if (type === "wallet") {
+    if (!cartWalletCanCover()) return;
+    cartSelectedPay = { type: "wallet" };
+    cartSelectedMethodId = null;
+  } else {
+    cartSelectedPay = { type: "method" };
+    cartSelectedMethodId = id;
+  }
+  renderCartMethods();
+  cartCheckoutTotals();
+}
+function cartCheckoutTotals() {
+  const el = document.getElementById("cartEstimatedTotal");
+  if (!el) return;
+  const cur = cartCurrency();
+  el.textContent = fmtPrice(cartTotal(cur), cur);
+  renderCartMethods();
+}
+async function showCart() {
+  stopTimers();
+  showView("view-cart");
+  document.getElementById("cartLoading").classList.remove("hidden");
+  document.getElementById("cartError").classList.add("hidden");
+  await reloadProducts();
+  document.getElementById("cartLoading").classList.add("hidden");
+  const notes = validateCart();
+  renderCart(notes);
+  if (cart.length) {
+    document.getElementById("cartMethodsLoading").classList.remove("hidden");
+    const ok = await ensureMethods();
+    document.getElementById("cartMethodsLoading").classList.add("hidden");
+    if (!ok) {
+      const errEl = document.getElementById("cartMethodsError");
+      errEl.classList.remove("hidden");
+      errEl.innerHTML = 'Could not load payment methods. <button type="button" class="btn btn-small" style="margin-left:8px;" onclick="showCart()">Retry</button>';
+    } else {
+      document.getElementById("cartMethodsError").classList.add("hidden");
+      renderCartMethods();
+      cartCheckoutTotals();
+    }
+  }
+}
+async function createCartOrder() {
+  const errEl = document.getElementById("cartError");
+  errEl.classList.add("hidden");
+  const termsErr = document.getElementById("cartTermsError");
+
+  const termsProducts = cartTermsProducts();
+  const agreed = termsProducts.length ? document.getElementById("cartTermsCheck").checked : false;
+  if (termsProducts.length && !agreed) { termsErr.classList.remove("hidden"); return; }
+  termsErr.classList.add("hidden");
+
+  const useWallet = cartSelectedPay && cartSelectedPay.type === "wallet";
+  if (!useWallet && !cartSelectedMethodId) {
+    errEl.textContent = "Please choose how to pay — wallet or a payment method.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  // Re-validate live stock/prices right before payment (the backend does too).
+  await reloadProducts();
+  const notes = validateCart();
+  renderCart(notes);
+  if (!cart.length) {
+    errEl.textContent = "Everything in your cart is out of stock right now.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  const btn = document.getElementById("cartConfirmBtn");
+  btn.disabled = true;
+  btn.textContent = "Creating order…";
+
+  // v17.115: no email in cart checkout — the backend accepts guest orders
+  // without one; the buyer gets the product on the pay/delivered page.
+  const body = {
+    items: cart.map(c => ({ productId: c.productId, quantity: c.quantity })),
+    agreedTerms: agreed
+  };
+  if (useWallet) body.useWallet = true;
+  else body.methodId = cartSelectedMethodId;
+
+  const r = await apiFetch("/web/orders", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    auth: true
+  });
+
+  btn.disabled = false;
+  btn.textContent = "Confirm Order";
+
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.order) {
+    if (r.data && r.data.error === "cart_empty") {
+      const removed = Array.isArray(r.data.removed) ? r.data.removed : [];
+      const ids = new Set(removed.map(x => String(x.productId)));
+      cart = cart.filter(c => !ids.has(String(c.productId)));
+      saveCart();
+      renderCart({ dropped: removed.map(x => ({ name: x.productName || "A product", reason: reasonLabel(x.reason) })) });
+      errEl.textContent = "Everything in your cart is out of stock right now.";
+    } else {
+      errEl.textContent = r.networkError
+        ? "Could not reach the store. Please check your connection and try again."
+        : friendlyError(r.data);
+    }
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  currentOrder = r.data.order;
+  cartRemoved = Array.isArray(r.data.removed) ? r.data.removed : [];
+  clearCart();
+  if (currentOrder.status === "approved") {
+    refreshBalance();
+    showDelivered(currentOrder);
+  } else {
+    showPayScreen();
+  }
+}
+
 function showDelivered(o) {
+  // v17.115: cart orders list their items instead of one product line.
   document.getElementById("deliveredSub").textContent =
-    `${o.productName} × ${o.quantity} — thank you for your order!`;
+    (o.isCartOrder && Array.isArray(o.items) && o.items.length)
+      ? `Cart order — ${o.items.map(it => `${it.productName} × ${it.quantity}`).join(", ")} — thank you for your order!`
+      : `${o.productName} × ${o.quantity} — thank you for your order!`;
   const insEl = document.getElementById("deliveredInstructions");
   if (o.instructions) {
     insEl.textContent = o.instructions;
@@ -2257,7 +2684,11 @@ function showDelivered(o) {
 function downloadCredentials() {
   const o = currentOrder;
   if (!o || !(o.credentials || []).length) return;
-  const text = `AHM7 STORE — Order ${o.orderId}\n${o.productName} x ${o.quantity}\n\n` +
+  // v17.115: cart orders list their items in the receipt.
+  const itemsLine = (o.isCartOrder && Array.isArray(o.items) && o.items.length)
+    ? o.items.map(it => `${it.productName} x ${it.quantity}`).join("\n")
+    : `${o.productName} x ${o.quantity}`;
+  const text = `AHM7 STORE — Order ${o.orderId}\n${itemsLine}\n\n` +
     o.credentials.map((c, i) => `--- Credential ${i + 1} ---\n${c}`).join("\n\n");
   const blob = new Blob([text], { type: "text/plain" });
   const a = document.createElement("a");
@@ -3469,6 +3900,7 @@ async function doAdminBanToggle() {
 document.addEventListener("DOMContentLoaded", async () => {
   renderCurrencyToggle();
   updateHeader();
+  updateCartBadge();
   registerServiceWorker();
   updateInstallRow();
   await loadConfig();
