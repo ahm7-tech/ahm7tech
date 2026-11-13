@@ -281,6 +281,9 @@ footer .btn { display: inline-block; margin-top: 12px; }
   border: 1px dashed var(--line); border-radius: 12px; background: var(--bg-soft);
   padding: 14px; font-size: 14px; white-space: pre-wrap; margin-bottom: 12px;
 }
+/* v17.113: copy buttons on the pay screens (final amount + payment details). */
+.total-big .amount-copy-btn { margin-top: 8px; }
+.details-copy-btn { margin: 0 0 12px; }
 .copy-row {
   display: flex; align-items: center; justify-content: space-between; gap: 10px;
   border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; background: #fff;
@@ -636,11 +639,13 @@ footer .btn { display: inline-block; margin-top: 12px; }
         <div class="label">Pay exactly</div>
         <div class="amount" id="payTotal">—</div>
         <div class="method-line" id="payMethodLine"></div>
+        <button type="button" class="btn btn-ghost btn-small amount-copy-btn" id="payTotalCopyBtn" onclick="copyPayAmount(this)">📋 Copy Amount</button>
       </div>
       <div class="countdown hidden" id="countdown"></div>
 
       <img id="payMethodImg" class="method-img hidden" alt="">
       <div class="pay-details" id="payDetails"></div>
+      <button type="button" class="btn btn-ghost btn-small details-copy-btn hidden" id="payDetailsCopyBtn" onclick="copyPayDetails(this)">📋 Copy Details</button>
       <div id="payCopyFields"></div>
 
       <div class="status-line" id="payStatusLine">Waiting for your payment…</div>
@@ -752,11 +757,13 @@ footer .btn { display: inline-block; margin-top: 12px; }
         <div class="label">Pay exactly</div>
         <div class="amount" id="topupPayTotal">—</div>
         <div class="method-line" id="topupPayMethodLine"></div>
+        <button type="button" class="btn btn-ghost btn-small amount-copy-btn" id="topupPayTotalCopyBtn" onclick="copyTopupAmount(this)">📋 Copy Amount</button>
       </div>
       <div class="countdown hidden" id="topupCountdown"></div>
 
       <img id="topupMethodImg" class="method-img hidden" alt="">
       <div class="pay-details" id="topupPayDetails"></div>
+      <button type="button" class="btn btn-ghost btn-small details-copy-btn hidden" id="topupPayDetailsCopyBtn" onclick="copyTopupDetails(this)">📋 Copy Details</button>
       <div id="topupPayCopyFields"></div>
 
       <div class="status-line" id="topupStatusLine">Waiting for your payment…</div>
@@ -1217,6 +1224,29 @@ async function copyText(text, btn) {
   }
 }
 function copyFieldValue(btn) { copyText(btn.getAttribute("data-value") || "", btn); }
+
+// v17.113: the exact amount the buyer must pay, as a plain number — the same
+// value the bot's Copy Amount button copies. PKR/INR are whole numbers;
+// crypto keeps full precision (the auto-verification offset lives in it).
+function amountCopyValue(total, currency) {
+  const n = Number(total || 0);
+  if (currency === "pkr" || currency === "inr") return String(Math.ceil(n));
+  return String(n);
+}
+function copyPayAmount(btn) {
+  if (!currentOrder) return;
+  copyText(amountCopyValue(currentOrder.total, currentOrder.currency), btn);
+}
+function copyTopupAmount(btn) {
+  if (!currentTopup) return;
+  copyText(amountCopyValue(currentTopup.verificationAmount, currentTopup.currency), btn);
+}
+function copyPayDetails(btn) {
+  copyText(document.getElementById("payDetails").textContent || "", btn);
+}
+function copyTopupDetails(btn) {
+  copyText(document.getElementById("topupPayDetails").textContent || "", btn);
+}
 
 function friendlyError(err) {
   const code = String((err && err.error) || err || "").toLowerCase();
@@ -2014,6 +2044,8 @@ function showPayScreen() {
   const pd = o.payDetails || {};
   document.getElementById("payDetails").textContent = pd.details || "";
   document.getElementById("payDetails").classList.toggle("hidden", !pd.details);
+  // v17.113: copy button for the whole details text (hidden when no details).
+  document.getElementById("payDetailsCopyBtn").classList.toggle("hidden", !pd.details);
   // v17.112: payment method photo above the payment details (nothing when none).
   const payMethodImgUrl = methodImageUrl(pd.imageUrl);
   const payMethodImgEl = document.getElementById("payMethodImg");
@@ -2436,6 +2468,8 @@ function showTopupPayScreen() {
   const pd = t.paymentDetails || {};
   document.getElementById("topupPayDetails").textContent = pd.details || "";
   document.getElementById("topupPayDetails").classList.toggle("hidden", !pd.details);
+  // v17.113: copy button for the whole details text (hidden when no details).
+  document.getElementById("topupPayDetailsCopyBtn").classList.toggle("hidden", !pd.details);
   // v17.112: payment method photo above the payment details (nothing when none).
   const topupMethodImgUrl = methodImageUrl(pd.imageUrl);
   const topupMethodImgEl = document.getElementById("topupMethodImg");
