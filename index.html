@@ -214,14 +214,6 @@ footer .btn { display: inline-block; margin-top: 12px; }
   width: 100%; padding: 11px 13px; font-size: 15px; border: 1px solid var(--line); border-radius: 12px; outline: none;
 }
 .field input:focus { border-color: var(--indigo); }
-/* Add Funds amount + currency selector sit side by side (v17.106). */
-.amount-row { display: flex; gap: 8px; }
-.amount-row input[type="number"] { flex: 1; min-width: 0; }
-.amount-row select {
-  padding: 11px 10px; font-size: 15px; border: 1px solid var(--line); border-radius: 12px;
-  outline: none; background: #fff; cursor: pointer; flex-shrink: 0;
-}
-.amount-row select:focus { border-color: var(--indigo); }
 .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .field .error { font-size: 12px; color: var(--red); margin-top: 4px; }
 
@@ -663,23 +655,16 @@ footer .btn { display: inline-block; margin-top: 12px; }
       <div id="fundsError" class="notice error hidden"></div>
 
       <div class="field">
-        <label for="topupAmount" id="topupAmountLabel">Amount</label>
-        <div class="amount-row">
-          <input type="number" id="topupAmount" placeholder="e.g. 10" min="1" step="0.01" inputmode="decimal">
-          <select id="topupCurrency" onchange="setTopupCurrency(this.value)" aria-label="Currency">
-            <option value="usd">USD $</option>
-            <option value="pkr">PKR ₨</option>
-            <option value="inr">INR ₹</option>
-          </select>
-        </div>
-        <div class="hint">Enter the amount you want to add to your wallet.</div>
-      </div>
-
-      <div class="field">
         <label>Payment method</label>
         <div id="topupMethodsLoading" class="loading" style="padding:16px 0;">Loading payment methods…</div>
         <div id="topupMethodsError" class="notice error hidden"></div>
         <div class="method-list" id="topupMethodList"></div>
+      </div>
+
+      <div class="field">
+        <label for="topupAmount" id="topupAmountLabel">Amount</label>
+        <input type="number" id="topupAmount" placeholder="" step="0.01" inputmode="decimal" disabled>
+        <div class="hint" id="topupAmountHint">Choose a payment method first.</div>
       </div>
 
       <div class="field">
@@ -2030,47 +2015,50 @@ function showFunds() {
   document.getElementById("topupAmount").value = "";
   topupMethodId = null;
   topupAmount = 0;
-  // v17.106: the Add Funds amount follows the shop's selected currency.
-  topupCurrency = (currency === "pkr" || currency === "inr") ? currency : "usd";
+  // v17.107: method first — the amount currency comes from the picked method,
+  // so there is no currency default here. The amount field stays disabled
+  // until a payment method is chosen (syncTopupCurrencyUI handles that).
+  topupCurrency = "usd";
   syncTopupCurrencyUI();
   updateTopupEstimated();
   showView("view-funds");
   loadTopupMethods();
 }
-// v17.106: the Add Funds amount follows the buyer's currency, not fixed USD.
-const TOPUP_CURRENCY_LABELS = { usd: "USD", pkr: "PKR", inr: "INR" };
+// v17.107: the Add Funds amount follows the picked payment method, not a
+// separate currency choice. The label shows the method's currency.
+const TOPUP_CURRENCY_LABELS = { usd: "USDT", pkr: "PKR", inr: "INR" };
 const TOPUP_CURRENCY_PLACEHOLDERS = { usd: "e.g. 10", pkr: "e.g. 2800", inr: "e.g. 850" };
-// Does a payment method belong to the selected top-up currency?
-// USD -> usdt/binance/bybit (methodCurrency "usdt"); PKR -> pkr; INR -> inr.
-function topupCurrencyMatches(m, cur) {
+// The top-up currency for the API body, from a payment method:
+// usdt/binance/bybit methods pay in USD, pkr in PKR, inr in INR.
+function topupCurrencyForMethod(m) {
   const mc = methodCurrency(m);
-  if (cur === "usd") return mc === "usdt";
-  return mc === cur;
+  if (mc === "pkr") return "pkr";
+  if (mc === "inr") return "inr";
+  return "usd";
 }
 function syncTopupCurrencyUI() {
   const label = document.getElementById("topupAmountLabel");
-  if (label) label.textContent = "Amount (" + (TOPUP_CURRENCY_LABELS[topupCurrency] || "USD") + ")";
   const input = document.getElementById("topupAmount");
-  if (input) input.placeholder = TOPUP_CURRENCY_PLACEHOLDERS[topupCurrency] || "e.g. 10";
-  const sel = document.getElementById("topupCurrency");
-  if (sel) sel.value = topupCurrency;
-}
-function setTopupCurrency(cur) {
-  topupCurrency = (cur === "pkr" || cur === "inr") ? cur : "usd";
-  // Keep the selected method only if it still matches the new currency.
+  const hint = document.getElementById("topupAmountHint");
   const m = (methods || []).find(x => String(x.id) === String(topupMethodId));
-  if (topupMethodId && (!m || !topupCurrencyMatches(m, topupCurrency))) topupMethodId = null;
-  syncTopupCurrencyUI();
-  renderTopupMethods();
-  updateTopupEstimated();
+  if (!m) {
+    if (label) label.textContent = "Amount";
+    if (input) { input.disabled = true; input.placeholder = ""; input.value = ""; }
+    if (hint) hint.textContent = "Choose a payment method first.";
+    return;
+  }
+  topupCurrency = topupCurrencyForMethod(m);
+  if (label) label.textContent = "Amount (" + (TOPUP_CURRENCY_LABELS[topupCurrency] || "USDT") + ")";
+  if (input) { input.disabled = false; input.placeholder = TOPUP_CURRENCY_PLACEHOLDERS[topupCurrency] || "e.g. 10"; }
+  if (hint) hint.textContent = "Enter the amount you want to add to your wallet.";
 }
 function updateTopupEstimated() {
   const amt = Number(document.getElementById("topupAmount").value || 0);
   topupAmount = amt;
   const el = document.getElementById("topupEstimated");
+  if (!topupMethodId) { el.textContent = "—"; return; }
   if (!amt || amt <= 0) { el.textContent = "—"; return; }
   const shown = topupCurrency === "usd" ? fmtUsd(amt) : fmtPrice(amt, topupCurrency);
-  if (!topupMethodId) { el.textContent = shown + " (pick a method)"; return; }
   // The exact verification amount comes from the server; for PKR/INR the
   // typed amount is only an estimate until the next step confirms it.
   el.textContent = topupCurrency === "usd" ? shown : shown + " (approx. — exact amount on next step)";
@@ -2099,11 +2087,9 @@ async function loadTopupMethods() {
 function renderTopupMethods() {
   const listEl = document.getElementById("topupMethodList");
   if (!listEl || !methods) return;
-  // Drop a stale selection that no longer matches the currency.
-  const sel = (methods || []).find(x => String(x.id) === String(topupMethodId));
-  if (topupMethodId && (!sel || !topupCurrencyMatches(sel, topupCurrency))) topupMethodId = null;
-  // v17.106: only methods of the selected top-up currency are shown.
-  const visible = (methods || []).filter(m => topupCurrencyMatches(m, topupCurrency));
+  // v17.107: method first — every method is shown; the picked method sets
+  // the amount currency, so there is no currency filtering any more.
+  const visible = methods || [];
   listEl.innerHTML = visible.length ? visible.map(m => `
     <label class="method-option ${String(m.id) === String(topupMethodId) ? "selected" : ""}">
       <input type="radio" name="topupMethod" value="${esc(m.id)}"
@@ -2114,21 +2100,27 @@ function renderTopupMethods() {
         <span class="method-type">${esc(m.paymentType || "")}${m.verificationMode === "manual" ? " • manual approval" : " • automatic"}</span>
       </span>
     </label>`).join("")
-    : (methods.length
-      ? '<p class="empty">No payment method available for this currency — pick another currency.</p>'
-      : '<p class="empty">No payment methods available right now. Please try again later.</p>');
+    : '<p class="empty">No payment methods available right now. Please try again later.</p>';
 }
 function selectTopupMethod(id) {
   topupMethodId = id;
+  // The picked method decides the amount currency — enable the amount field
+  // and label it with that method's currency.
+  syncTopupCurrencyUI();
   renderTopupMethods();
   updateTopupEstimated();
+  const input = document.getElementById("topupAmount");
+  if (input && !input.disabled) input.focus();
 }
 async function createTopup() {
   const errEl = document.getElementById("fundsError");
   errEl.className = "notice error";
   errEl.classList.add("hidden");
   const amt = Number(document.getElementById("topupAmount").value || 0);
-  if (!amt || amt <= 0 || amt > 100000) {
+  // v17.107: no amount limit — any positive amount works. Only a number
+  // greater than 0 is required; if the backend ever rejects an amount, its
+  // error message is shown as-is below.
+  if (!amt || amt <= 0) {
     errEl.textContent = "Please enter an amount greater than 0.";
     errEl.classList.remove("hidden");
     return;
@@ -2148,7 +2140,7 @@ async function createTopup() {
   btn.disabled = true;
   btn.textContent = "Creating top-up…";
 
-  // v17.106: the amount is sent in the buyer's currency (usd/pkr/inr);
+  // v17.107: the amount is sent in the picked method's currency (usd/pkr/inr);
   // the backend converts it to USDT for the wallet credit.
   const r = await apiFetch("/web/topup", {
     method: "POST",
@@ -2156,7 +2148,7 @@ async function createTopup() {
     body: JSON.stringify({
       methodId: topupMethodId,
       amount: amt,
-      currency: topupCurrency
+      currency: topupCurrencyForMethod(m)
     }),
     auth: true
   });
