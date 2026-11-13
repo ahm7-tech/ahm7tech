@@ -1179,6 +1179,18 @@ function fmtPrice(value, cur) {
   if (cur === "inr") return "₹" + Math.ceil(n).toLocaleString("en-US");
   return "$" + n.toFixed(2);
 }
+// v17.114: the EXACT amount to pay on the pay screens. Crypto (USDT/Binance/Bybit)
+// shows the full precision (up to 4 decimals, trailing zeros trimmed) so the buyer
+// pays the exact auto-verification amount — e.g. "$10.0015", not "$10.00". PKR/INR
+// keep their whole-number display. Uses the same value the Copy Amount button
+// copies, so display and copy always agree. Only the big "Pay exactly" total uses
+// this — fmtPrice and every other price on the site are unchanged.
+function fmtExactPayAmount(value, cur) {
+  const n = Number(value || 0);
+  if (cur === "pkr") return "₨" + Math.ceil(n).toLocaleString("en-US");
+  if (cur === "inr") return "₹" + Math.ceil(n).toLocaleString("en-US");
+  return "$" + amountCopyValue(value, cur);
+}
 function fmtUsd(n) { return "$" + Number(n || 0).toFixed(2); }
 
 // Price the buyer pays for a product in the browsing currency.
@@ -2029,7 +2041,7 @@ function showPayScreen() {
   document.getElementById("payTitle").textContent = "Complete your payment";
   document.getElementById("paySubtitle").textContent =
     `${o.productName} × ${o.quantity}` + (o.freeQuantity > 0 ? `  (+ ${o.freeQuantity} free)` : "");
-  document.getElementById("payTotal").textContent = fmtPrice(o.total, o.currency);
+  document.getElementById("payTotal").textContent = fmtExactPayAmount(o.total, o.currency);
   document.getElementById("payMethodLine").textContent =
     `Pay with ${o.paymentMethod} • ${o.verificationMode === "manual" ? "manual approval" : "automatic verification"}`;
   document.getElementById("payOrderId").textContent = "Order ID: " + o.orderId;
@@ -2453,7 +2465,7 @@ function showTopupPayScreen() {
   document.getElementById("topupPayTitle").textContent = "Complete your top-up";
   document.getElementById("topupPaySubtitle").textContent =
     `Adding ${fmtUsd(t.amountUsdt)} to your wallet` + (methodName ? ` • ${methodName}` : "");
-  document.getElementById("topupPayTotal").textContent = fmtPrice(t.verificationAmount, t.currency);
+  document.getElementById("topupPayTotal").textContent = fmtExactPayAmount(t.verificationAmount, t.currency);
   document.getElementById("topupPayMethodLine").textContent =
     methodName ? `Pay with ${methodName}` : "";
   document.getElementById("topupPayId").textContent = "Top-up ID: " + t.topupId;
