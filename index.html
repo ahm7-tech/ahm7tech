@@ -137,6 +137,27 @@ section.block h2 { font-size: 24px; font-weight: 800; }
 .btn-ghost:hover { border-color: var(--indigo); color: var(--indigo); }
 .btn-block { width: 100%; }
 .btn-small { padding: 7px 12px; font-size: 13px; }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-danger:hover { background: #B91C1C; }
+
+/* Website admin (v17.106) */
+.admin-row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+  font-family: inherit; cursor: pointer; margin-bottom: 8px; }
+.admin-row:hover { border-color: var(--indigo); }
+.admin-row .admin-row-main { flex: 1; min-width: 0; }
+.admin-row .admin-row-email { font-weight: 700; font-size: 14px; word-break: break-all; }
+.admin-row .admin-row-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.admin-row .admin-row-bal { font-weight: 800; font-size: 15px; white-space: nowrap; }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0;
+  border-bottom: 1px solid var(--line); font-size: 14px; }
+.kv:last-child { border-bottom: 0; }
+.kv .k { color: var(--muted); font-weight: 700; }
+.kv .v { font-weight: 700; text-align: right; word-break: break-all; }
+.admin-section { margin-top: 20px; }
+.admin-section h3 { font-size: 16px; margin: 0 0 10px; }
+.pager { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+.pager .page-info { font-size: 13px; color: var(--muted); font-weight: 700; }
 
 /* ===================== All products list ===================== */
 .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -193,6 +214,14 @@ footer .btn { display: inline-block; margin-top: 12px; }
   width: 100%; padding: 11px 13px; font-size: 15px; border: 1px solid var(--line); border-radius: 12px; outline: none;
 }
 .field input:focus { border-color: var(--indigo); }
+/* Add Funds amount + currency selector sit side by side (v17.106). */
+.amount-row { display: flex; gap: 8px; }
+.amount-row input[type="number"] { flex: 1; min-width: 0; }
+.amount-row select {
+  padding: 11px 10px; font-size: 15px; border: 1px solid var(--line); border-radius: 12px;
+  outline: none; background: #fff; cursor: pointer; flex-shrink: 0;
+}
+.amount-row select:focus { border-color: var(--indigo); }
 .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .field .error { font-size: 12px; color: var(--red); margin-top: 4px; }
 
@@ -634,8 +663,15 @@ footer .btn { display: inline-block; margin-top: 12px; }
       <div id="fundsError" class="notice error hidden"></div>
 
       <div class="field">
-        <label for="topupAmount">Amount (USD)</label>
-        <input type="number" id="topupAmount" placeholder="e.g. 10" min="1" step="0.01" inputmode="decimal">
+        <label for="topupAmount" id="topupAmountLabel">Amount</label>
+        <div class="amount-row">
+          <input type="number" id="topupAmount" placeholder="e.g. 10" min="1" step="0.01" inputmode="decimal">
+          <select id="topupCurrency" onchange="setTopupCurrency(this.value)" aria-label="Currency">
+            <option value="usd">USD $</option>
+            <option value="pkr">PKR ₨</option>
+            <option value="inr">INR ₹</option>
+          </select>
+        </div>
         <div class="hint">Enter the amount you want to add to your wallet.</div>
       </div>
 
@@ -810,6 +846,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
         <button type="button" class="menu-row" onclick="goRoute('#/transactions')"><span class="menu-icon">🧾</span> Transactions <span class="menu-arrow">›</span></button>
         <button type="button" class="menu-row" onclick="goRoute('#/funds')"><span class="menu-icon">💰</span> Add Funds <span class="menu-arrow">›</span></button>
         <button type="button" class="menu-row" onclick="goRoute('#/help')"><span class="menu-icon">❓</span> Help &amp; Support <span class="menu-arrow">›</span></button>
+        <button type="button" class="menu-row" onclick="goRoute('#/admin')"><span class="menu-icon">🛡️</span> Admin <span class="menu-arrow">›</span></button>
         <a class="menu-row" href="https://t.me/ahm7storebot" target="_blank" rel="noopener"><span class="menu-icon">💬</span> Chat with us on Telegram <span class="menu-arrow">›</span></a>
         <button type="button" class="menu-row danger hidden" id="logoutRow" onclick="doLogout()"><span class="menu-icon">🚪</span> Log out <span class="menu-arrow">›</span></button>
       </div>
@@ -854,6 +891,116 @@ footer .btn { display: inline-block; margin-top: 12px; }
   </div>
 </main>
 
+<!-- ===================== ADMIN LOGIN VIEW ===================== -->
+<main id="view-admin-login" class="view hidden">
+  <div class="container">
+    <div class="panel" style="max-width:460px;">
+      <button type="button" class="back-link" onclick="goRoute('#/')">← Back to Shop</button>
+      <h2>🛡️ Admin</h2>
+      <p class="sub">Sign in with the admin password to manage store users.</p>
+      <div id="adminLoginError" class="notice error hidden"></div>
+      <div class="field">
+        <label for="adminPass">Admin password</label>
+        <input type="password" id="adminPass" placeholder="Enter the admin password" autocomplete="current-password">
+      </div>
+      <button type="button" class="btn btn-block" id="adminLoginBtn" onclick="doAdminLogin()">Sign in as Admin</button>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== ADMIN USERS VIEW ===================== -->
+<main id="view-admin-users" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <button type="button" class="back-link" onclick="goRoute('#/')">← Back to Shop</button>
+      <h2>🛡️ Store Users</h2>
+      <p class="sub" id="adminUsersCount"></p>
+      <div class="toolbar">
+        <input type="text" class="search-box" id="adminSearchInput" placeholder="Search by email…" onkeydown="if(event.key==='Enter'){adminSearchUsers();}">
+        <button type="button" class="btn" onclick="adminSearchUsers()">Search</button>
+      </div>
+      <div id="adminUsersError" class="notice error hidden"></div>
+      <div id="adminUsersLoading" class="loading hidden">Loading users…</div>
+      <div id="adminUsersEmpty" class="empty hidden">No users found.</div>
+      <div id="adminUsersList"></div>
+      <div class="pager">
+        <button type="button" class="btn btn-ghost btn-small" id="adminUsersPrev" onclick="adminUsersPageChange(-1)">← Prev</button>
+        <span class="page-info" id="adminUsersPageInfo"></span>
+        <button type="button" class="btn btn-ghost btn-small" id="adminUsersNext" onclick="adminUsersPageChange(1)">Next →</button>
+      </div>
+      <div style="margin-top:16px;">
+        <button type="button" class="btn btn-ghost btn-block" onclick="doAdminLogout()">Log out of Admin</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ===================== ADMIN USER DETAIL VIEW ===================== -->
+<main id="view-admin-user" class="view hidden">
+  <div class="container">
+    <div class="panel">
+      <button type="button" class="back-link" onclick="goRoute('#/admin/users')">← Back to Users</button>
+      <h2>🛡️ User Details</h2>
+      <div id="adminDetailNotice" class="notice success hidden"></div>
+      <div id="adminDetailError" class="notice error hidden"></div>
+      <div id="adminDetailLoading" class="loading hidden">Loading user…</div>
+      <div id="adminDetailContent" class="hidden">
+        <div class="wallet-card">
+          <div class="wc-label">Wallet balance</div>
+          <div class="wc-amount" id="adminDetailBalance">$0.00</div>
+          <div class="wc-email" id="adminDetailEmail"></div>
+        </div>
+        <div style="margin-top:14px;">
+          <div class="kv"><span class="k">WhatsApp</span><span class="v" id="adminDetailWhatsapp">—</span></div>
+          <div class="kv"><span class="k">Account</span><span class="v" id="adminDetailAccount">—</span></div>
+          <div class="kv"><span class="k">Status</span><span class="v" id="adminDetailBanned">—</span></div>
+          <div class="kv"><span class="k">Joined</span><span class="v" id="adminDetailJoined">—</span></div>
+        </div>
+
+        <div class="admin-section">
+          <h3>💰 Adjust Wallet</h3>
+          <div class="field">
+            <label for="adminAdjustAmount">Amount (USD) — positive adds, negative deducts</label>
+            <input type="number" id="adminAdjustAmount" placeholder="e.g. 10 or -5" step="0.01" inputmode="decimal">
+          </div>
+          <button type="button" class="btn btn-block" id="adminAdjustBtn" onclick="doAdminAdjust()">Apply</button>
+          <div id="adminAdjustMsg" class="notice hidden" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="admin-section">
+          <h3>🔑 Reset Password</h3>
+          <div class="field">
+            <label for="adminResetPass">New password (at least 6 characters)</label>
+            <input type="password" id="adminResetPass" placeholder="New password" autocomplete="new-password">
+          </div>
+          <button type="button" class="btn btn-block" id="adminResetBtn" onclick="doAdminResetPassword()">Reset Password</button>
+          <div id="adminResetMsg" class="notice hidden" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="admin-section">
+          <button type="button" class="btn btn-danger btn-block" id="adminBanBtn" onclick="doAdminBanToggle()">Ban User</button>
+        </div>
+
+        <div class="admin-section">
+          <h3>📦 Recent Orders</h3>
+          <div id="adminDetailOrders"></div>
+        </div>
+        <div class="admin-section">
+          <h3>💳 Recent Top-ups</h3>
+          <div id="adminDetailTopups"></div>
+        </div>
+        <div class="admin-section">
+          <h3>🧾 Wallet Transactions</h3>
+          <div id="adminDetailTxns"></div>
+        </div>
+        <div style="margin-top:20px;">
+          <button type="button" class="btn btn-ghost btn-block" onclick="goRoute('#/')">← Back to Shop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
 <!-- ===================== Bottom navigation ===================== -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
@@ -870,9 +1017,10 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
 <script>
 /* ============================================================
-   AHM7 STORE v17.105 — full web store (wallet-first)
+   AHM7 STORE v17.106 — full web store (wallet-first) + website admin
    Products live from the bot API (same MongoDB as Telegram).
    Auth: JWT in localStorage ("ahm7_token").
+   Admin: separate JWT in localStorage ("ahm7_admin_token"), routes #/admin*.
    ============================================================ */
 
 // ---- API base: change this one line if the API moves ----
@@ -904,7 +1052,18 @@ let pollTimer = null;
 let countdownTimer = null;
 let topupMethodId = null;
 let topupAmount = 0;
+let topupCurrency = "usd"; // "usd" | "pkr" | "inr" — Add Funds amount currency (v17.106)
 let googleScriptLoaded = false;
+
+// ---- Website admin state (v17.106) — separate from the shopper session ----
+let adminToken = localStorage.getItem("ahm7_admin_token") || "";
+let adminUsersPage = 0;
+let adminUsersTotalPages = 1;
+let adminUsersTotal = 0;
+let adminUsersSearch = "";
+let adminCurrentUserId = null;
+let adminCurrentUser = null;   // detail user object from GET /web/admin/users/:id
+let adminDetailNotice = null;  // {type:"success"|"error", text} shown after a detail reload
 
 /* ============================================================
    Small helpers
@@ -991,6 +1150,7 @@ function friendlyError(err) {
     order_already_paid: "This order was already paid.",
     topup_not_found: "That top-up was not found. Please start a new one.",
     insufficient_balance: "Your wallet balance is not enough for this order. Please add funds first.",
+    user_not_found: "That user was not found.",
     unauthorized: "Please sign in and try again.",
     google_not_configured: "Google sign-in is not available right now. Please use email instead.",
     too_many_requests: "Too many tries — please wait a moment and try again."
@@ -1172,6 +1332,13 @@ async function route() {
   if (page === "signup") { showView("view-signup"); maybeShowGoogle("signup"); return; }
   if (page === "menu") { showMenu(); return; }
   if (page === "help") { showView("view-help"); return; }
+  // v17.106: website admin (separate admin login, no shopper login needed).
+  if (page === "admin") {
+    if (parts[1] === "users" && parts[2]) { showAdminUser(parts[2]); return; }
+    if (parts[1] === "users") { showAdminUsers(); return; }
+    showAdminLogin();
+    return;
+  }
   // Unknown route -> shop.
   showView("view-shop");
   loadProducts();
@@ -1863,22 +2030,50 @@ function showFunds() {
   document.getElementById("topupAmount").value = "";
   topupMethodId = null;
   topupAmount = 0;
+  // v17.106: the Add Funds amount follows the shop's selected currency.
+  topupCurrency = (currency === "pkr" || currency === "inr") ? currency : "usd";
+  syncTopupCurrencyUI();
   updateTopupEstimated();
   showView("view-funds");
   loadTopupMethods();
 }
+// v17.106: the Add Funds amount follows the buyer's currency, not fixed USD.
+const TOPUP_CURRENCY_LABELS = { usd: "USD", pkr: "PKR", inr: "INR" };
+const TOPUP_CURRENCY_PLACEHOLDERS = { usd: "e.g. 10", pkr: "e.g. 2800", inr: "e.g. 850" };
+// Does a payment method belong to the selected top-up currency?
+// USD -> usdt/binance/bybit (methodCurrency "usdt"); PKR -> pkr; INR -> inr.
+function topupCurrencyMatches(m, cur) {
+  const mc = methodCurrency(m);
+  if (cur === "usd") return mc === "usdt";
+  return mc === cur;
+}
+function syncTopupCurrencyUI() {
+  const label = document.getElementById("topupAmountLabel");
+  if (label) label.textContent = "Amount (" + (TOPUP_CURRENCY_LABELS[topupCurrency] || "USD") + ")";
+  const input = document.getElementById("topupAmount");
+  if (input) input.placeholder = TOPUP_CURRENCY_PLACEHOLDERS[topupCurrency] || "e.g. 10";
+  const sel = document.getElementById("topupCurrency");
+  if (sel) sel.value = topupCurrency;
+}
+function setTopupCurrency(cur) {
+  topupCurrency = (cur === "pkr" || cur === "inr") ? cur : "usd";
+  // Keep the selected method only if it still matches the new currency.
+  const m = (methods || []).find(x => String(x.id) === String(topupMethodId));
+  if (topupMethodId && (!m || !topupCurrencyMatches(m, topupCurrency))) topupMethodId = null;
+  syncTopupCurrencyUI();
+  renderTopupMethods();
+  updateTopupEstimated();
+}
 function updateTopupEstimated() {
-  const m = (methods || []).find(x => String(x.id) === String(topupMethodId)) || null;
   const amt = Number(document.getElementById("topupAmount").value || 0);
   topupAmount = amt;
   const el = document.getElementById("topupEstimated");
   if (!amt || amt <= 0) { el.textContent = "—"; return; }
-  if (!m) { el.textContent = fmtUsd(amt) + " (pick a method)"; return; }
-  // The exact verification amount comes from the server; the method currency
-  // decides the display: PKR/INR methods show the local amount, crypto shows USD.
-  const cur = methodCurrency(m);
-  if (cur === "usdt") el.textContent = fmtUsd(amt);
-  else el.textContent = fmtPrice(amt, cur) + " (approx. — exact amount on next step)";
+  const shown = topupCurrency === "usd" ? fmtUsd(amt) : fmtPrice(amt, topupCurrency);
+  if (!topupMethodId) { el.textContent = shown + " (pick a method)"; return; }
+  // The exact verification amount comes from the server; for PKR/INR the
+  // typed amount is only an estimate until the next step confirms it.
+  el.textContent = topupCurrency === "usd" ? shown : shown + " (approx. — exact amount on next step)";
 }
 async function loadTopupMethods() {
   const listEl = document.getElementById("topupMethodList");
@@ -1904,7 +2099,12 @@ async function loadTopupMethods() {
 function renderTopupMethods() {
   const listEl = document.getElementById("topupMethodList");
   if (!listEl || !methods) return;
-  listEl.innerHTML = methods.length ? methods.map(m => `
+  // Drop a stale selection that no longer matches the currency.
+  const sel = (methods || []).find(x => String(x.id) === String(topupMethodId));
+  if (topupMethodId && (!sel || !topupCurrencyMatches(sel, topupCurrency))) topupMethodId = null;
+  // v17.106: only methods of the selected top-up currency are shown.
+  const visible = (methods || []).filter(m => topupCurrencyMatches(m, topupCurrency));
+  listEl.innerHTML = visible.length ? visible.map(m => `
     <label class="method-option ${String(m.id) === String(topupMethodId) ? "selected" : ""}">
       <input type="radio" name="topupMethod" value="${esc(m.id)}"
         ${String(m.id) === String(topupMethodId) ? "checked" : ""}
@@ -1914,7 +2114,9 @@ function renderTopupMethods() {
         <span class="method-type">${esc(m.paymentType || "")}${m.verificationMode === "manual" ? " • manual approval" : " • automatic"}</span>
       </span>
     </label>`).join("")
-    : '<p class="empty">No payment methods available right now. Please try again later.</p>';
+    : (methods.length
+      ? '<p class="empty">No payment method available for this currency — pick another currency.</p>'
+      : '<p class="empty">No payment methods available right now. Please try again later.</p>');
 }
 function selectTopupMethod(id) {
   topupMethodId = id;
@@ -1946,13 +2148,15 @@ async function createTopup() {
   btn.disabled = true;
   btn.textContent = "Creating top-up…";
 
+  // v17.106: the amount is sent in the buyer's currency (usd/pkr/inr);
+  // the backend converts it to USDT for the wallet credit.
   const r = await apiFetch("/web/topup", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       methodId: topupMethodId,
-      amountUsdt: amt,
-      currency: methodCurrency(m)
+      amount: amt,
+      currency: topupCurrency
     }),
     auth: true
   });
@@ -1975,7 +2179,7 @@ async function createTopup() {
     currency: r.data.currency || methodCurrency(m),
     expiresAt: r.data.expiresAt,
     status: "pending_payment",
-    amountUsdt: amt
+    amountUsdt: Number(r.data.amountUsdt != null ? r.data.amountUsdt : 0)
   };
   showTopupPayScreen();
 }
@@ -2408,6 +2612,329 @@ function showMenu() {
     document.getElementById("menuEmail").textContent = user.email || "";
   }
   showView("view-menu");
+}
+
+/* ============================================================
+   Website admin (v17.106) — separate admin login + user management
+   Admin token ("ahm7_admin_token") is separate from the shopper JWT.
+   ============================================================ */
+async function adminFetch(path, options) {
+  options = options || {};
+  const headers = Object.assign({}, options.headers || {});
+  if (adminToken) headers["Authorization"] = "Bearer " + adminToken;
+  try {
+    const res = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
+    let data = null;
+    try { data = await res.json(); } catch (e) { data = null; }
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    return { ok: false, status: 0, data: null, networkError: true };
+  }
+}
+function clearAdminSession() {
+  adminToken = "";
+  localStorage.removeItem("ahm7_admin_token");
+}
+function isAdminLoggedIn() { return Boolean(adminToken); }
+// 401 on any admin call -> the admin token is dead: drop it and show login.
+function adminUnauthorized() {
+  clearAdminSession();
+  goRoute("#/admin");
+}
+
+function showAdminLogin() {
+  if (isAdminLoggedIn()) { goRoute("#/admin/users"); return; }
+  document.getElementById("adminLoginError").classList.add("hidden");
+  document.getElementById("adminPass").value = "";
+  showView("view-admin-login");
+}
+async function doAdminLogin() {
+  const errEl = document.getElementById("adminLoginError");
+  errEl.classList.add("hidden");
+  const password = document.getElementById("adminPass").value || "";
+  if (!password) {
+    errEl.textContent = "Enter the admin password.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  const btn = document.getElementById("adminLoginBtn");
+  btn.disabled = true;
+  btn.textContent = "Signing in…";
+  const r = await adminFetch("/web/admin/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password })
+  });
+  btn.disabled = false;
+  btn.textContent = "Sign in as Admin";
+  if (r.status === 503) {
+    errEl.textContent = "Admin login is not set up yet — set WEB_ADMIN_PASSWORD first.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (r.status === 401) {
+    errEl.textContent = "Wrong password.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.token) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  adminToken = r.data.token;
+  localStorage.setItem("ahm7_admin_token", adminToken);
+  goRoute("#/admin/users");
+}
+function doAdminLogout() {
+  clearAdminSession();
+  goRoute("#/admin");
+}
+
+async function showAdminUsers(page) {
+  stopTimers();
+  if (!isAdminLoggedIn()) { showAdminLogin(); return; }
+  if (typeof page === "number") adminUsersPage = page;
+  const listEl = document.getElementById("adminUsersList");
+  const errEl = document.getElementById("adminUsersError");
+  const loadEl = document.getElementById("adminUsersLoading");
+  const emptyEl = document.getElementById("adminUsersEmpty");
+  const countEl = document.getElementById("adminUsersCount");
+  const pageInfoEl = document.getElementById("adminUsersPageInfo");
+  errEl.classList.add("hidden");
+  emptyEl.classList.add("hidden");
+  listEl.innerHTML = "";
+  loadEl.classList.remove("hidden");
+  showView("view-admin-users");
+  const q = "?page=" + adminUsersPage + (adminUsersSearch ? "&search=" + encodeURIComponent(adminUsersSearch) : "");
+  const r = await adminFetch("/web/admin/users" + q);
+  loadEl.classList.add("hidden");
+  if (r.status === 401) { adminUnauthorized(); return; }
+  if (!r.ok || !r.data || r.data.ok !== true || !Array.isArray(r.data.users)) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  adminUsersTotal = Number(r.data.total || 0);
+  adminUsersTotalPages = Math.max(1, Number(r.data.totalPages || 1));
+  adminUsersPage = Number(r.data.page || 0);
+  countEl.textContent = adminUsersTotal + (adminUsersTotal === 1 ? " user" : " users") + (adminUsersSearch ? " matching “" + adminUsersSearch + "”" : "");
+  document.getElementById("adminSearchInput").value = adminUsersSearch;
+  const users = r.data.users;
+  if (!users.length) { emptyEl.classList.remove("hidden"); }
+  listEl.innerHTML = users.map(u => `
+    <button type="button" class="admin-row" onclick="goRoute('#/admin/users/${encodeURIComponent(u.id)}')">
+      <span class="admin-row-main">
+        <span class="admin-row-email">${esc(u.email || "")}</span><br>
+        <span class="admin-row-sub">${esc(fmtDate(u.createdAt))}${u.banned ? " • Banned" : ""}</span>
+      </span>
+      ${u.banned ? '<span class="status-badge status-failed">Banned</span>' : ""}
+      <span class="admin-row-bal">${fmtUsd(u.walletUsdt)}</span>
+    </button>`).join("");
+  pageInfoEl.textContent = "Page " + (adminUsersPage + 1) + " of " + adminUsersTotalPages;
+  document.getElementById("adminUsersPrev").disabled = adminUsersPage <= 0;
+  document.getElementById("adminUsersNext").disabled = adminUsersPage >= adminUsersTotalPages - 1;
+}
+function adminSearchUsers() {
+  adminUsersSearch = (document.getElementById("adminSearchInput").value || "").trim();
+  adminUsersPage = 0;
+  showAdminUsers(0);
+}
+function adminUsersPageChange(delta) {
+  const next = adminUsersPage + delta;
+  if (next < 0 || next >= adminUsersTotalPages) return;
+  showAdminUsers(next);
+}
+
+async function showAdminUser(id) {
+  stopTimers();
+  if (!isAdminLoggedIn()) { showAdminLogin(); return; }
+  adminCurrentUserId = id;
+  adminCurrentUser = null;
+  const errEl = document.getElementById("adminDetailError");
+  const noticeEl = document.getElementById("adminDetailNotice");
+  const loadEl = document.getElementById("adminDetailLoading");
+  const contentEl = document.getElementById("adminDetailContent");
+  errEl.classList.add("hidden");
+  noticeEl.classList.add("hidden");
+  contentEl.classList.add("hidden");
+  loadEl.classList.remove("hidden");
+  showView("view-admin-user");
+  const r = await adminFetch("/web/admin/users/" + encodeURIComponent(id));
+  loadEl.classList.add("hidden");
+  if (r.status === 401) { adminUnauthorized(); return; }
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.user) {
+    errEl.textContent = r.networkError
+      ? "Could not reach the store. Please check your connection."
+      : friendlyError(r.data);
+    errEl.classList.remove("hidden");
+    return;
+  }
+  const u = r.data.user;
+  adminCurrentUser = u;
+  document.getElementById("adminDetailBalance").textContent = fmtUsd(u.walletUsdt);
+  document.getElementById("adminDetailEmail").textContent = u.email || "";
+  document.getElementById("adminDetailWhatsapp").textContent = u.whatsapp || "—";
+  document.getElementById("adminDetailAccount").textContent = u.googleLinked ? "Google-linked" : "Email + password";
+  document.getElementById("adminDetailBanned").innerHTML = u.banned
+    ? '<span class="status-badge status-failed">Banned</span>'
+    : '<span class="status-badge status-approved">Active</span>';
+  document.getElementById("adminDetailJoined").textContent = fmtDate(u.createdAt);
+  const banBtn = document.getElementById("adminBanBtn");
+  banBtn.textContent = u.banned ? "Unban User" : "Ban User";
+  banBtn.className = "btn btn-block " + (u.banned ? "" : "btn-danger");
+  document.getElementById("adminAdjustAmount").value = "";
+  document.getElementById("adminAdjustMsg").classList.add("hidden");
+  document.getElementById("adminResetPass").value = "";
+  document.getElementById("adminResetMsg").classList.add("hidden");
+  if (adminDetailNotice) {
+    noticeEl.textContent = adminDetailNotice.text;
+    noticeEl.className = "notice " + (adminDetailNotice.type === "error" ? "error" : "success");
+    noticeEl.classList.remove("hidden");
+    adminDetailNotice = null;
+  }
+  const orders = Array.isArray(r.data.orders) ? r.data.orders : [];
+  document.getElementById("adminDetailOrders").innerHTML = orders.length ? orders.map(o => {
+    const total = (o.totalLocal != null && o.currency)
+      ? fmtPrice(o.totalLocal, String(o.currency).toLowerCase())
+      : fmtUsd(o.totalUsdt != null ? o.totalUsdt : o.total);
+    return `<div class="order-card" style="margin-bottom:8px;">
+      <div class="order-head">
+        <div>
+          <div class="order-name">${esc(o.productName || "Order")}${o.quantity ? " × " + Number(o.quantity) : ""}</div>
+          <div class="order-meta">Order ${esc(o.orderId || "")} • ${esc(fmtDate(o.createdAt))}</div>
+        </div>
+        <div>
+          <div class="order-total">${total}</div>
+          <div style="text-align:right;margin-top:4px;">${statusBadge(o.status)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join("") : '<p class="empty">No orders yet.</p>';
+  const topups = Array.isArray(r.data.topups) ? r.data.topups : [];
+  document.getElementById("adminDetailTopups").innerHTML = topups.length ? topups.map(t => `
+    <div class="txn-row">
+      <div class="txn-icon topup">＋</div>
+      <div class="txn-info">
+        <div class="txn-label">Top-up${t.paymentMethod ? " via " + esc(t.paymentMethod) : ""}</div>
+        <div class="txn-sub">${esc(t.topupId || "")} • ${esc(fmtDate(t.createdAt))}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="txn-amount pos">+${fmtUsd(t.amountUsdt)}</div>
+        <div style="margin-top:2px;">${statusBadge(t.status)}</div>
+      </div>
+    </div>`).join("") : '<p class="empty">No top-ups yet.</p>';
+  const txns = Array.isArray(r.data.transactions) ? r.data.transactions : [];
+  document.getElementById("adminDetailTxns").innerHTML = txns.length ? txns.map(t => {
+    const isTopup = String(t.kind || "").toLowerCase() === "topup";
+    const isRefund = String(t.kind || "").toLowerCase() === "refund";
+    const label = isTopup
+      ? "Top-up" + (t.method ? " via " + t.method : "")
+      : (isRefund ? "Refund" : "Purchase") + (t.product ? " — " + t.product : "");
+    const sign = (isTopup || isRefund) ? "+" : "−";
+    return `
+    <div class="txn-row">
+      <div class="txn-icon ${isTopup ? "topup" : "spend"}">${isTopup ? "＋" : "−"}</div>
+      <div class="txn-info">
+        <div class="txn-label">${esc(label)}</div>
+        <div class="txn-sub">${esc(t.refId || "")} • ${esc(fmtDate(t.createdAt))}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="txn-amount ${isTopup ? "pos" : "neg"}">${sign}${fmtUsd(t.amountUsdt)}</div>
+        <div style="margin-top:2px;">${statusBadge(t.status)}</div>
+      </div>
+    </div>`;
+  }).join("") : '<p class="empty">No transactions yet.</p>';
+  contentEl.classList.remove("hidden");
+}
+function adminDetailShowMsg(elId, type, text) {
+  const el = document.getElementById(elId);
+  el.textContent = text;
+  el.className = "notice " + (type === "error" ? "error" : "success");
+  el.classList.remove("hidden");
+}
+async function doAdminAdjust() {
+  const msgId = "adminAdjustMsg";
+  const amt = Number(document.getElementById("adminAdjustAmount").value || 0);
+  if (!adminCurrentUserId) return;
+  if (!Number.isFinite(amt) || amt === 0) {
+    adminDetailShowMsg(msgId, "error", "Enter an amount — positive to add, negative to deduct.");
+    return;
+  }
+  const btn = document.getElementById("adminAdjustBtn");
+  btn.disabled = true;
+  btn.textContent = "Applying…";
+  const r = await adminFetch("/web/admin/users/" + encodeURIComponent(adminCurrentUserId) + "/adjust", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amountUsdt: amt })
+  });
+  btn.disabled = false;
+  btn.textContent = "Apply";
+  if (r.status === 401) { adminUnauthorized(); return; }
+  if (!r.ok || !r.data || r.data.ok !== true || !r.data.user) {
+    const code = String((r.data && r.data.error) || "").toLowerCase();
+    adminDetailShowMsg(msgId, "error", code === "insufficient_balance"
+      ? "That amount is more than the user's wallet balance."
+      : (r.networkError ? "Could not reach the store. Please check your connection and try again." : friendlyError(r.data)));
+    return;
+  }
+  adminDetailNotice = { type: "success", text: "Wallet updated. New balance: " + fmtUsd(r.data.user.walletUsdt) + "." };
+  showAdminUser(adminCurrentUserId);
+}
+async function doAdminResetPassword() {
+  const msgId = "adminResetMsg";
+  const pw = document.getElementById("adminResetPass").value || "";
+  if (!adminCurrentUserId) return;
+  if (pw.length < 6) {
+    adminDetailShowMsg(msgId, "error", "New password must be at least 6 characters.");
+    return;
+  }
+  const btn = document.getElementById("adminResetBtn");
+  btn.disabled = true;
+  btn.textContent = "Resetting…";
+  const r = await adminFetch("/web/admin/users/" + encodeURIComponent(adminCurrentUserId) + "/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ newPassword: pw })
+  });
+  btn.disabled = false;
+  btn.textContent = "Reset Password";
+  if (r.status === 401) { adminUnauthorized(); return; }
+  if (!r.ok || !r.data || r.data.ok !== true) {
+    adminDetailShowMsg(msgId, "error", r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data));
+    return;
+  }
+  document.getElementById("adminResetPass").value = "";
+  adminDetailShowMsg(msgId, "success", "Password updated — share it with the buyer.");
+}
+async function doAdminBanToggle() {
+  if (!adminCurrentUserId || !adminCurrentUser) return;
+  const banned = !adminCurrentUser.banned;
+  if (banned && !window.confirm("Ban this user? They will not be able to sign in.")) return;
+  const btn = document.getElementById("adminBanBtn");
+  btn.disabled = true;
+  const r = await adminFetch("/web/admin/users/" + encodeURIComponent(adminCurrentUserId) + "/ban", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ banned })
+  });
+  btn.disabled = false;
+  if (r.status === 401) { adminUnauthorized(); return; }
+  if (!r.ok || !r.data || r.data.ok !== true) {
+    adminDetailNotice = { type: "error", text: r.networkError
+      ? "Could not reach the store. Please check your connection and try again."
+      : friendlyError(r.data) };
+  } else {
+    adminDetailNotice = { type: "success", text: banned ? "User banned." : "User unbanned." };
+  }
+  showAdminUser(adminCurrentUserId);
 }
 
 /* ============================================================
