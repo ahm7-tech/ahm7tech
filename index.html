@@ -301,6 +301,14 @@ footer .btn { display: inline-block; margin-top: 12px; }
 .notice.error { background: var(--red-soft); border: 1px solid #FECACA; color: #991B1B; }
 .notice.info { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
 .notice.success { background: var(--emerald-soft); border: 1px solid #A7F3D0; color: #065F46; }
+.notice.warn { background: #FFFBEB; border: 1px solid #FCD34D; color: #92400E; }
+
+/* v17.111: prominent screenshot (proof) panel on the pay screens */
+.proof-panel { border: 2px solid var(--indigo); background: #EEF2FF; border-radius: 14px; padding: 16px; margin-top: 14px; }
+.proof-panel .proof-text { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 12px; }
+.proof-panel .proof-hint { font-size: 13px; color: var(--muted); margin-top: 10px; }
+.proof-btn { display: block; width: 100%; box-sizing: border-box; text-align: center; cursor: pointer; padding: 14px 18px; font-size: 16px; }
+.proof-file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
 .loading { text-align: center; color: var(--muted); padding: 40px 0; font-size: 15px; }
 .empty { text-align: center; color: var(--muted); padding: 30px 0; }
 
@@ -635,12 +643,13 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
       <button type="button" class="btn btn-block" id="paidBtn" onclick="markPaid()">✅ I Made Payment</button>
 
-      <div class="divider">— or —</div>
+      <div id="payExpiredNotice" class="notice warn hidden">⏰ Payment not detected — send a manual screenshot instead.</div>
 
-      <div class="field">
-        <label for="proofInput">📤 Upload payment screenshot</label>
-        <input type="file" id="proofInput" accept="image/*" onchange="uploadProof(this)">
-        <div class="hint">If the payment is not found automatically, upload a screenshot and the admin will approve it manually.</div>
+      <div class="proof-panel hidden" id="proofPanel">
+        <div class="proof-text">Send a screenshot of your payment — the admin will approve it manually.</div>
+        <label for="proofInput" class="btn btn-block proof-btn">📤 Send Payment Screenshot</label>
+        <input type="file" id="proofInput" class="proof-file-input" accept="image/*" onchange="uploadProof(this)">
+        <div class="proof-hint">Upload a clear screenshot of your payment receipt.</div>
       </div>
 
       <div id="proofNote" class="notice info hidden">Proof sent — the admin will review it, your product will appear here once approved.</div>
@@ -749,12 +758,13 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
       <button type="button" class="btn btn-block" id="topupPaidBtn" onclick="markTopupPaid()">✅ I Made Payment</button>
 
-      <div class="divider">— or —</div>
+      <div id="topupExpiredNotice" class="notice warn hidden">⏰ Payment not detected — send a manual screenshot instead.</div>
 
-      <div class="field">
-        <label for="topupProofInput">📤 Upload payment screenshot</label>
-        <input type="file" id="topupProofInput" accept="image/*" onchange="uploadTopupProof(this)">
-        <div class="hint">If the payment is not found automatically, upload a screenshot and the admin will approve it manually.</div>
+      <div class="proof-panel hidden" id="topupProofPanel">
+        <div class="proof-text">Send a screenshot of your payment — the admin will approve it manually.</div>
+        <label for="topupProofInput" class="btn btn-block proof-btn">📤 Send Payment Screenshot</label>
+        <input type="file" id="topupProofInput" class="proof-file-input" accept="image/*" onchange="uploadTopupProof(this)">
+        <div class="proof-hint">Upload a clear screenshot of your payment receipt.</div>
       </div>
 
       <div id="topupProofNote" class="notice info hidden">Proof sent — the admin will review it, your wallet will be credited once approved.</div>
@@ -1121,6 +1131,8 @@ let currentOrder = null;
 let currentTopup = null;
 let pollTimer = null;
 let countdownTimer = null;
+let payWindowEnded = false; // v17.111: order auto-check window over (timer ended / expired)
+let topupWindowEnded = false; // v17.111: top-up auto-check window over (timer ended / expired)
 let topupMethodId = null;
 let topupAmount = 0;
 let topupCurrency = "usd"; // "usd" | "pkr" | "inr" — Add Funds amount currency (v17.106)
@@ -1973,6 +1985,7 @@ function showPayScreen() {
   document.getElementById("proofInput").value = "";
   document.getElementById("paidBtn").disabled = false;
   document.getElementById("paidBtn").textContent = "✅ I Made Payment";
+  payWindowEnded = false;
   setStatusLine("Waiting for your payment…");
 
   const pd = o.payDetails || {};
@@ -1993,8 +2006,30 @@ function showPayScreen() {
     if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
   }
 
+  applyOrderProofState();
   showView("view-pay");
   startPolling();
+}
+/* v17.111: when the screenshot panel is shown, and when the "I Made Payment"
+   button is shown.
+   - manual method: the screenshot is the main action, shown at once; no
+     "I Made Payment" button (nothing to auto-check).
+   - automatic method: the screenshot stays hidden while the countdown runs;
+     once the timer ends (or the order expires) the button goes away and the
+     screenshot panel + "not detected" notice appear instead. */
+function applyOrderProofState() {
+  const o = currentOrder;
+  if (!o) return;
+  const manual = o.verificationMode === "manual";
+  const ended = o.status === "expired" || payWindowEnded;
+  document.getElementById("paidBtn").classList.toggle("hidden", manual || ended);
+  document.getElementById("proofPanel").classList.toggle("hidden", !manual && !ended);
+  document.getElementById("payExpiredNotice").classList.toggle("hidden", manual || !ended);
+  if (manual) {
+    setStatusLine("Send a screenshot of your payment — the admin will approve it manually.");
+  } else if (ended) {
+    setStatusLine("⏰ Payment not detected — send a manual screenshot instead.");
+  }
 }
 function setStatusLine(html) {
   document.getElementById("payStatusLine").innerHTML = html;
@@ -2007,7 +2042,13 @@ function startCountdown(expiresMs) {
     const m = Math.floor(left / 60000);
     const s = Math.floor((left % 60000) / 1000);
     el.textContent = `⏳ Payment window: ${m}:${String(s).padStart(2, "0")} left`;
-    if (left <= 0) clearInterval(countdownTimer);
+    if (left <= 0) {
+      clearInterval(countdownTimer);
+      // v17.111: the automatic window is over — the screenshot is now the action.
+      payWindowEnded = true;
+      el.textContent = "⏰ Payment window ended";
+      applyOrderProofState();
+    }
   }
   tick();
   countdownTimer = setInterval(tick, 1000);
@@ -2037,13 +2078,22 @@ function handleOrderStatus(o) {
     stopTimers();
     showFailed("Payment rejected", "Rejected by admin — contact support and they will help you.");
   } else if (o.status === "expired") {
-    stopTimers();
-    showFailed("Payment window expired", "Payment window expired — start a new order.");
+    // v17.111: stay on the pay screen — the buyer can still send a screenshot
+    // and the backend accepts it (moves the order back to pending_review).
+    // Keep polling so the proof upload is picked up.
+    payWindowEnded = true;
+    const cdEl = document.getElementById("countdown");
+    cdEl.textContent = "⏰ Payment window ended";
+    applyOrderProofState();
   } else if (o.status === "pending_review") {
     setStatusLine("<b>Proof received.</b> The admin is reviewing it — your product will appear here once approved.");
     document.getElementById("proofNote").classList.remove("hidden");
   } else {
-    setStatusLine("Waiting for your payment… We check automatically every few seconds.");
+    if (o.verificationMode === "manual") {
+      setStatusLine("Send a screenshot of your payment — the admin will approve it manually.");
+    } else {
+      setStatusLine("Waiting for your payment… We check automatically every few seconds.");
+    }
   }
 }
 async function markPaid() {
@@ -2322,6 +2372,7 @@ async function createTopup() {
     paymentDetails: r.data.paymentDetails,
     verificationAmount: r.data.verificationAmount,
     currency: r.data.currency || methodCurrency(m),
+    verificationMode: r.data.verificationMode,
     expiresAt: r.data.expiresAt,
     status: "pending_payment",
     amountUsdt: Number(r.data.amountUsdt != null ? r.data.amountUsdt : 0)
@@ -2351,6 +2402,7 @@ function showTopupPayScreen() {
   document.getElementById("topupProofInput").value = "";
   document.getElementById("topupPaidBtn").disabled = false;
   document.getElementById("topupPaidBtn").textContent = "✅ I Made Payment";
+  topupWindowEnded = false;
   setTopupStatusLine("Waiting for your payment…");
 
   const pd = t.paymentDetails || {};
@@ -2371,8 +2423,26 @@ function showTopupPayScreen() {
     if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
   }
 
+  applyTopupProofState();
   showView("view-funds-pay");
   startTopupPolling();
+}
+/* v17.111: same rules as the order pay screen, for top-ups — manual shows the
+   screenshot panel at once with no "I Made Payment" button; automatic hides
+   it until the timer ends or the top-up expires. */
+function applyTopupProofState() {
+  const t = currentTopup;
+  if (!t) return;
+  const manual = t.verificationMode === "manual";
+  const ended = t.status === "expired" || topupWindowEnded;
+  document.getElementById("topupPaidBtn").classList.toggle("hidden", manual || ended);
+  document.getElementById("topupProofPanel").classList.toggle("hidden", !manual && !ended);
+  document.getElementById("topupExpiredNotice").classList.toggle("hidden", manual || !ended);
+  if (manual) {
+    setTopupStatusLine("Send a screenshot of your payment — the admin will approve it manually.");
+  } else if (ended) {
+    setTopupStatusLine("⏰ Payment not detected — send a manual screenshot instead.");
+  }
 }
 function setTopupStatusLine(html) {
   document.getElementById("topupStatusLine").innerHTML = html;
@@ -2385,7 +2455,13 @@ function startTopupCountdown(expiresMs) {
     const m = Math.floor(left / 60000);
     const s = Math.floor((left % 60000) / 1000);
     el.textContent = `⏳ Payment window: ${m}:${String(s).padStart(2, "0")} left`;
-    if (left <= 0) clearInterval(countdownTimer);
+    if (left <= 0) {
+      clearInterval(countdownTimer);
+      // v17.111: the automatic window is over — the screenshot is now the action.
+      topupWindowEnded = true;
+      el.textContent = "⏰ Payment window ended";
+      applyTopupProofState();
+    }
   }
   tick();
   countdownTimer = setInterval(tick, 1000);
@@ -2423,13 +2499,22 @@ async function handleTopupStatus(t) {
     stopTimers();
     showFailed("Top-up rejected", "Rejected by admin — contact support and they will help you.");
   } else if (t.status === "expired") {
-    stopTimers();
-    showFailed("Payment window expired", "Payment window expired — start a new top-up.");
+    // v17.111: stay on the pay screen — the buyer can still send a screenshot
+    // and the backend accepts it (moves the top-up back to pending_review).
+    // Keep polling so the proof upload is picked up.
+    topupWindowEnded = true;
+    const cdEl = document.getElementById("topupCountdown");
+    cdEl.textContent = "⏰ Payment window ended";
+    applyTopupProofState();
   } else if (t.status === "pending_review") {
     setTopupStatusLine("<b>Proof received.</b> The admin is reviewing it — your wallet will be credited once approved.");
     document.getElementById("topupProofNote").classList.remove("hidden");
   } else {
-    setTopupStatusLine("Waiting for your payment… We check automatically every few seconds.");
+    if (t.verificationMode === "manual") {
+      setTopupStatusLine("Send a screenshot of your payment — the admin will approve it manually.");
+    } else {
+      setTopupStatusLine("Waiting for your payment… We check automatically every few seconds.");
+    }
   }
 }
 function showFundsKeepNotice() {
