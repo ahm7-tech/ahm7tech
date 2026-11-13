@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#4F46E5">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>AHM7 STORE — Premium Digital Products, Low Prices</title>
 <meta name="description" content="Premium digital products at low prices. Add funds, pay with Easypaisa, JazzCash, NayaPay or USDT. Instant delivery, no Telegram needed.">
 <style>
@@ -340,6 +343,38 @@ footer .btn { display: inline-block; margin-top: 12px; }
 .menu-row .menu-icon { font-size: 20px; width: 28px; text-align: center; }
 .menu-row .menu-arrow { margin-left: auto; color: var(--muted); }
 .menu-row.danger { color: var(--red); }
+
+/* User ID row + notifications switch (v17.108) */
+.uid-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-top: 10px; background: var(--bg-soft);
+}
+.uid-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+.uid-value { font-size: 16px; font-weight: 800; letter-spacing: .5px; }
+.mini-btn {
+  border: 1px solid var(--indigo-line); background: #fff; color: var(--indigo-dark);
+  font-size: 13px; font-weight: 700; border-radius: 999px; padding: 5px 12px; white-space: nowrap;
+}
+.notif-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin-top: 10px; background: #fff;
+}
+.notif-label { font-size: 15px; font-weight: 700; }
+.notif-sub { font-size: 13px; color: var(--muted); }
+.switch { position: relative; display: inline-block; width: 48px; height: 28px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch .slider {
+  position: absolute; inset: 0; background: #CBD5E1; border-radius: 999px; transition: .2s;
+}
+.switch .slider:before {
+  content: ""; position: absolute; width: 22px; height: 22px; left: 3px; top: 3px;
+  background: #fff; border-radius: 50%; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .slider { background: var(--indigo); }
+.switch input:checked + .slider:before { transform: translateX(20px); }
+.inline-row { display: flex; gap: 8px; align-items: stretch; }
+.inline-row input { flex: 1; min-width: 0; }
+.inline-row select { width: 118px; flex-shrink: 0; }
 
 /* FAQ cards */
 .faq-card { border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; background: #fff; }
@@ -825,12 +860,32 @@ footer .btn { display: inline-block; margin-top: 12px; }
           <div class="wc-amount" id="menuBalance">$0.00</div>
           <div class="wc-email" id="menuEmail"></div>
         </div>
+        <div class="uid-row hidden" id="menuUserIdRow">
+          <div>
+            <div class="uid-label">Your User ID</div>
+            <div class="uid-value" id="menuUserId">—</div>
+          </div>
+          <button type="button" class="mini-btn" onclick="copyText(document.getElementById('menuUserId').textContent, this)">Copy</button>
+        </div>
+        <div class="notif-row">
+          <div>
+            <div class="notif-label">🔔 Notifications</div>
+            <div class="notif-sub">Order updates, delivery alerts, funds and product news.</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="notifToggle" onchange="toggleNotifications()">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div id="notifMsg" class="notice hidden" style="margin-top:8px;"></div>
       </div>
       <div class="menu-list">
         <button type="button" class="menu-row" onclick="goRoute('#/orders')"><span class="menu-icon">📦</span> My Orders <span class="menu-arrow">›</span></button>
         <button type="button" class="menu-row" onclick="goRoute('#/transactions')"><span class="menu-icon">🧾</span> Transactions <span class="menu-arrow">›</span></button>
         <button type="button" class="menu-row" onclick="goRoute('#/funds')"><span class="menu-icon">💰</span> Add Funds <span class="menu-arrow">›</span></button>
         <button type="button" class="menu-row" onclick="goRoute('#/help')"><span class="menu-icon">❓</span> Help &amp; Support <span class="menu-arrow">›</span></button>
+        <button type="button" class="menu-row hidden" id="installAppRow" onclick="installApp()"><span class="menu-icon">📲</span> Install App <span class="menu-arrow">›</span></button>
+        <div id="installIosHint" class="notice info hidden" style="margin-top:8px;">On iPhone: tap Share, then Add to Home Screen.</div>
         <button type="button" class="menu-row" onclick="goRoute('#/admin')"><span class="menu-icon">🛡️</span> Admin <span class="menu-arrow">›</span></button>
         <a class="menu-row" href="https://t.me/ahm7storebot" target="_blank" rel="noopener"><span class="menu-icon">💬</span> Chat with us on Telegram <span class="menu-arrow">›</span></a>
         <button type="button" class="menu-row danger hidden" id="logoutRow" onclick="doLogout()"><span class="menu-icon">🚪</span> Log out <span class="menu-arrow">›</span></button>
@@ -901,7 +956,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
       <h2>🛡️ Store Users</h2>
       <p class="sub" id="adminUsersCount"></p>
       <div class="toolbar">
-        <input type="text" class="search-box" id="adminSearchInput" placeholder="Search by email…" onkeydown="if(event.key==='Enter'){adminSearchUsers();}">
+        <input type="text" class="search-box" id="adminSearchInput" placeholder="Search by email, WhatsApp number, or User ID" onkeydown="if(event.key==='Enter'){adminSearchUsers();}">
         <button type="button" class="btn" onclick="adminSearchUsers()">Search</button>
       </div>
       <div id="adminUsersError" class="notice error hidden"></div>
@@ -936,6 +991,7 @@ footer .btn { display: inline-block; margin-top: 12px; }
           <div class="wc-email" id="adminDetailEmail"></div>
         </div>
         <div style="margin-top:14px;">
+          <div class="kv"><span class="k">User ID</span><span class="v"><span id="adminDetailUserCode">—</span> <button type="button" class="mini-btn" onclick="copyText(document.getElementById('adminDetailUserCode').textContent, this)">Copy</button></span></div>
           <div class="kv"><span class="k">WhatsApp</span><span class="v" id="adminDetailWhatsapp">—</span></div>
           <div class="kv"><span class="k">Account</span><span class="v" id="adminDetailAccount">—</span></div>
           <div class="kv"><span class="k">Status</span><span class="v" id="adminDetailBanned">—</span></div>
@@ -945,8 +1001,15 @@ footer .btn { display: inline-block; margin-top: 12px; }
         <div class="admin-section">
           <h3>💰 Adjust Wallet</h3>
           <div class="field">
-            <label for="adminAdjustAmount">Amount (USD) — positive adds, negative deducts</label>
-            <input type="number" id="adminAdjustAmount" placeholder="e.g. 10 or -5" step="0.01" inputmode="decimal">
+            <label for="adminAdjustAmount">Amount — positive adds, negative deducts</label>
+            <div class="inline-row">
+              <input type="number" id="adminAdjustAmount" placeholder="e.g. 10 or -5" step="0.01" inputmode="decimal">
+              <select id="adminAdjustCurrency">
+                <option value="usd" selected>USD $</option>
+                <option value="pkr">PKR ₨</option>
+                <option value="inr">INR ₹</option>
+              </select>
+            </div>
           </div>
           <button type="button" class="btn btn-block" id="adminAdjustBtn" onclick="doAdminAdjust()">Apply</button>
           <div id="adminAdjustMsg" class="notice hidden" style="margin-top:10px;"></div>
@@ -1002,10 +1065,11 @@ footer .btn { display: inline-block; margin-top: 12px; }
 
 <script>
 /* ============================================================
-   AHM7 STORE v17.106 — full web store (wallet-first) + website admin
+   AHM7 STORE v17.108 — full web store (wallet-first) + website admin
    Products live from the bot API (same MongoDB as Telegram).
    Auth: JWT in localStorage ("ahm7_token").
    Admin: separate JWT in localStorage ("ahm7_admin_token"), routes #/admin*.
+   PWA: installable (manifest.json + sw.js) with push-notification opt-in.
    ============================================================ */
 
 // ---- API base: change this one line if the API moves ----
@@ -1020,7 +1084,7 @@ let currency = "usd";          // "usd" | "pkr" | "inr" (browsing currency)
 let activeCategory = "All";
 let token = localStorage.getItem("ahm7_token") || "";
 let user = null;               // {email, whatsapp, walletUsdt}
-let siteConfig = null;         // {googleClientId, currencies}
+let siteConfig = null;         // {googleClientId, currencies, vapidPublicKey}
 let configLoaded = false;
 let redirectAfterLogin = "#/";
 let checkoutProduct = null;
@@ -2602,8 +2666,171 @@ function showMenu() {
   if (loggedIn) {
     document.getElementById("menuBalance").textContent = fmtUsd(user.walletUsdt);
     document.getElementById("menuEmail").textContent = user.email || "";
+    const uidRow = document.getElementById("menuUserIdRow");
+    if (user.userCode) {
+      document.getElementById("menuUserId").textContent = user.userCode;
+      uidRow.classList.remove("hidden");
+    } else {
+      uidRow.classList.add("hidden");
+    }
+    refreshNotifToggle();
   }
+  updateInstallRow();
   showView("view-menu");
+}
+
+/* ============================================================
+   PWA install + push notifications (v17.108)
+   ============================================================ */
+let deferredInstallPrompt = null;
+let appInstalled = false;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  updateInstallRow();
+});
+window.addEventListener("appinstalled", () => {
+  appInstalled = true;
+  deferredInstallPrompt = null;
+  updateInstallRow();
+});
+function isIosDevice() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent || "") && !window.MSStream;
+}
+function isStandalone() {
+  return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+}
+function updateInstallRow() {
+  const row = document.getElementById("installAppRow");
+  if (!row) return;
+  if (appInstalled || isStandalone()) { row.classList.add("hidden"); return; }
+  if (deferredInstallPrompt) { row.classList.remove("hidden"); return; }
+  if (isIosDevice()) { row.classList.remove("hidden"); return; }
+  row.classList.add("hidden");
+}
+async function installApp() {
+  const hint = document.getElementById("installIosHint");
+  if (deferredInstallPrompt) {
+    if (hint) hint.classList.add("hidden");
+    deferredInstallPrompt.prompt();
+    try { await deferredInstallPrompt.userChoice; } catch (e) {}
+    deferredInstallPrompt = null;
+    updateInstallRow();
+    return;
+  }
+  if (isIosDevice() && hint) {
+    hint.textContent = "On iPhone: tap Share, then Add to Home Screen.";
+    hint.classList.remove("hidden");
+  }
+}
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator)) return Promise.resolve(null);
+  return navigator.serviceWorker.register("sw.js").catch(() => null);
+}
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = window.atob(base64);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+async function getPushSubscription() {
+  try {
+    if (!("serviceWorker" in navigator) || !("PushManager" in window)) return null;
+    const reg = await navigator.serviceWorker.ready;
+    return await reg.pushManager.getSubscription();
+  } catch (e) { return null; }
+}
+function notifShowMsg(text, type) {
+  const msg = document.getElementById("notifMsg");
+  if (!msg) return;
+  msg.textContent = text;
+  msg.className = "notice " + (type === "error" ? "error" : type === "success" ? "success" : "info");
+  msg.classList.remove("hidden");
+}
+async function refreshNotifToggle() {
+  const toggle = document.getElementById("notifToggle");
+  if (!toggle) return;
+  if (!isLoggedIn()) { toggle.checked = false; return; }
+  if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+    toggle.checked = false;
+    notifShowMsg("Notifications are not supported on this browser.", "info");
+    return;
+  }
+  const sub = await getPushSubscription();
+  toggle.checked = Boolean(sub);
+}
+async function toggleNotifications() {
+  const toggle = document.getElementById("notifToggle");
+  if (!toggle) return;
+  if (!isLoggedIn()) { toggle.checked = false; return; }
+  if (toggle.checked) {
+    if (!("Notification" in window)) {
+      toggle.checked = false;
+      notifShowMsg("Notifications are not supported on this browser.", "error");
+      return;
+    }
+    const perm = await Notification.requestPermission();
+    if (perm !== "granted") {
+      toggle.checked = false;
+      notifShowMsg("Notifications are off — allow them in your browser settings to turn them on.", "error");
+      return;
+    }
+    const vapid = siteConfig && siteConfig.vapidPublicKey ? String(siteConfig.vapidPublicKey) : "";
+    if (!vapid) {
+      toggle.checked = false;
+      notifShowMsg("Notifications are not set up yet.", "error");
+      return;
+    }
+    let reg = null;
+    try {
+      reg = await registerServiceWorker();
+      if (!reg) reg = await navigator.serviceWorker.ready;
+    } catch (e) { reg = null; }
+    if (!reg) {
+      toggle.checked = false;
+      notifShowMsg("Notifications are not set up yet.", "error");
+      return;
+    }
+    let sub = null;
+    try {
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(vapid) });
+    } catch (e) { sub = null; }
+    if (!sub) {
+      toggle.checked = false;
+      notifShowMsg("Could not turn notifications on. Please try again.", "error");
+      return;
+    }
+    const r = await apiFetch("/web/push/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ subscription: sub.toJSON() }),
+      auth: true
+    });
+    if (!r.ok || !r.data || r.data.ok !== true) {
+      try { await sub.unsubscribe(); } catch (e) {}
+      toggle.checked = false;
+      notifShowMsg("Could not turn notifications on. Please try again.", "error");
+      return;
+    }
+    notifShowMsg("Notifications on — you will get order, delivery and funds alerts.", "success");
+  } else {
+    try {
+      const sub = await getPushSubscription();
+      if (sub) {
+        const endpoint = sub.endpoint;
+        try { await sub.unsubscribe(); } catch (e) {}
+        await apiFetch("/web/push/unsubscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ endpoint }),
+          auth: true
+        });
+      }
+    } catch (e) {}
+    notifShowMsg("Notifications off.", "info");
+  }
 }
 
 /* ============================================================
@@ -2770,6 +2997,7 @@ async function showAdminUser(id) {
   adminCurrentUser = u;
   document.getElementById("adminDetailBalance").textContent = fmtUsd(u.walletUsdt);
   document.getElementById("adminDetailEmail").textContent = u.email || "";
+  document.getElementById("adminDetailUserCode").textContent = u.userCode || "—";
   document.getElementById("adminDetailWhatsapp").textContent = u.whatsapp || "—";
   document.getElementById("adminDetailAccount").textContent = u.googleLinked ? "Google-linked" : "Email + password";
   document.getElementById("adminDetailBanned").innerHTML = u.banned
@@ -2852,6 +3080,7 @@ function adminDetailShowMsg(elId, type, text) {
 async function doAdminAdjust() {
   const msgId = "adminAdjustMsg";
   const amt = Number(document.getElementById("adminAdjustAmount").value || 0);
+  const cur = (document.getElementById("adminAdjustCurrency").value || "usd").toLowerCase();
   if (!adminCurrentUserId) return;
   if (!Number.isFinite(amt) || amt === 0) {
     adminDetailShowMsg(msgId, "error", "Enter an amount — positive to add, negative to deduct.");
@@ -2860,10 +3089,11 @@ async function doAdminAdjust() {
   const btn = document.getElementById("adminAdjustBtn");
   btn.disabled = true;
   btn.textContent = "Applying…";
+  const body = cur === "usd" ? { amountUsdt: amt } : { amount: amt, currency: cur };
   const r = await adminFetch("/web/admin/users/" + encodeURIComponent(adminCurrentUserId) + "/adjust", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amountUsdt: amt })
+    body: JSON.stringify(body)
   });
   btn.disabled = false;
   btn.textContent = "Apply";
@@ -2935,6 +3165,8 @@ async function doAdminBanToggle() {
 document.addEventListener("DOMContentLoaded", async () => {
   renderCurrencyToggle();
   updateHeader();
+  registerServiceWorker();
+  updateInstallRow();
   await loadConfig();
   if (token) await loadMe();
   window.addEventListener("hashchange", route);
